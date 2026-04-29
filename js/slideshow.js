@@ -52,7 +52,6 @@ const slides = [
       { icon: 'fa-touchscreen', title: 'Écran tactile', desc: 'Interface interactive 7 pouces' },
       { icon: 'fa-cloud-sun', title: 'Météo', desc: 'Données météorologiques en temps réel' },
       { icon: 'fa-bus', title: 'Transports', desc: 'Horaires de bus en direct' },
-      { icon: 'fa-leaf', title: 'Pollution', desc: 'Qualité de l\'air locale' },
       { icon: 'fa-newspaper', title: 'Actualités', desc: 'Infos locales et événements' }
     ],
     type: 'services'
