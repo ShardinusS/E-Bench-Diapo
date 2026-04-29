@@ -84,7 +84,7 @@ const slides = [
   {
     icon: 'fa-chart-area',
     title: 'Étude énergétique (MATLAB)',
-    chartLabel: 'Analyse saisonnière : Été / Hiver / Mi-saison',
+    chartId: 'matlab-chart',
     points: [
       'Bilan énergétique validé',
       'Autonomie hivernale : 3-5 jours',
@@ -326,10 +326,7 @@ function renderSlide(slide) {
       content = `
         <div class="slide-content">
           <h2><i class="fas ${slide.icon}"></i> ${slide.title}</h2>
-          <div class="chart-placeholder">
-            <i class="fas fa-chart-line"></i>
-            <p>${slide.chartLabel}</p>
-          </div>
+          <div class="chart-container" id="${slide.chartId || ''}" style="width:100%;height:500px;"></div>
           <div class="key-points">
             ${slide.points.map(point => `
               <div class="point">
@@ -588,3 +585,72 @@ document.addEventListener('mousemove', () => {
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', initSlideshow);
+
+// ═══════════════ MATLAB CHART RENDERER ═══════════════
+(function renderMatlabChart(){
+  const chartEl=document.getElementById('matlab-chart');
+  if(!chartEl)return;
+  
+  // Data from MATLAB analysis (04-ebench-matlab-analysis.html)
+  const MO=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const fm=[0.35,0.40,0.42,0.48,0.52,0.55,0.58,0.55,0.50,0.45,0.40,0.38];
+  const jp=[1,1,1,1,1,1,1,1,1,1,1,1];
+  const Pl=14.5;
+  const jm=[16,17,19,21,23,24,25,24,21,18,16,15];
+  const lat=50,alt=0,tilt=37,Pn=500,eta=0.85;
+  const hrs=Array.from({length:289},(_,i)=>4+i*0.1);
+  
+  function pvPow(h,d,lat,lon,tilt,Pn,eta){
+    const B=2*Math.PI*(d-1)/365;
+    const delta=(0.006918-0.399912*Math.cos(B)+0.070257*Math.sin(B)-0.006758*Math.cos(2*B)+0.000907*Math.sin(2*B)-0.002697*Math.cos(3*B)+0.00148*Math.sin(3*B))*180/Math.PI;
+    const phi=lat*Math.PI/180,dec=delta*Math.PI/180;
+    const ws=Math.acos(-Math.tan(phi)*Math.tan(dec))*180/Math.PI;
+    const sr=12-ws/15,ss=12+ws/15;
+    const Gsc=1367,I0=Gsc*(1.00011+0.034221*Math.cos(B)+0.00128*Math.sin(B)+0.000719*Math.cos(2*B)+0.000077*Math.sin(2*B));
+    const powers=[],directs=[],diffuses=[];
+    for(let hr of h){
+      if(hr<sr||hr>ss){powers.push(0);directs.push(0);diffuses.push(0);continue;}
+      const omega=(hr-12)*15*Math.PI/180;
+      let sinAlpha=Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(omega);
+      sinAlpha=Math.max(0,Math.min(1,sinAlpha));
+      const alpha=Math.asin(sinAlpha)*180/Math.PI;
+      const cosThetaT=sinAlpha*Math.cos(tilt*Math.PI/180)+Math.cos(alpha)*Math.sin(tilt*Math.PI/180);
+      const m=1/(sinAlpha+0.0001),m0=1.5;
+      let Ib=I0*Math.exp(-0.14*m),Id=I0*0.1*(1-Math.exp(-0.25*(m-m0)));
+      Ib=Math.max(0,Ib),Id=Math.max(0,Id);
+      const Rb=Math.max(0,cosThetaT/(sinAlpha+0.0001)),Gt=Ib*Rb+Id*(1+Math.cos(tilt*Math.PI/180))/2;
+      const Pinst=Pn*(Gt/1000)*eta,pwr=Pinst*(0.4+0.6*Math.random());
+      powers.push(pwr);directs.push(Ib*Rb);diffuses.push(Id);}
+    return{hours:h,powers,direct:directs,diffuse:diffuses};
+  }
+  
+  function trapz(x,y){let s=0;for(let i=1;i<x.length;i++)s+=(x[i]-x[i-1])*(y[i]+y[i-1])/2;return s;}
+  
+  const Ec=[],Er=[],Em_arr=[],Eb_arr=[];
+  for(let m=0;m<12;m++){const{powers}=pvPow(hrs,jm[m],lat,0,tilt,Pn,eta);const ec=trapz(hrs,powers),er=ec*fm[m];Ec.push(ec);Er.push(er);const cm=Pl*24;Em_arr.push(cm*jp[m]);Eb_arr.push(er*jp[m]-cm*jp[m])}
+  const Ept=Er.map((e,i)=>e*jp[i]);
+  
+  const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+  const bgColor=isDark?'#0D1220':'#FAF6F0';
+  const textColor=isDark?'#8899B4':'#4A5568';
+  const gridColor=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+  
+  const traceProd={x:MO,y:Ept.map(e=>e/1000),name:'Production',type:'bar',marker:{color:'#00D4A0'}};
+  const traceCons={x:MO,y:Em_arr.map(e=>e/1000),name:'Consommation',type:'bar',marker:{color:'#EF4444'}};
+  
+  const layout={
+    title:'Production vs Consommation mensuelle',
+    paper_bgcolor:bgColor,
+    plot_bgcolor:bgColor,
+    font:{color:textColor,family:'Space Grotesk'},
+    barmode:'group',
+    xaxis:{title:'',tickangle:0,gridcolor:gridColor,linecolor:gridColor},
+    yaxis:{title:'Énergie (kWh)',gridcolor:gridColor,linecolor:gridColor},
+    margin:{t:50,b:40,l:50,r:20},
+    showlegend:true,
+    legend:{x:0,y:1.1,orientation:'h'}
+  };
+  
+  const config={responsive:true,displayModeBar:false,scrollZoom:false};
+  Plotly.newPlot('matlab-chart',[traceProd,traceCons],layout,config);
+})();
