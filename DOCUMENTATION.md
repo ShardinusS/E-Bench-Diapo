@@ -136,9 +136,22 @@ Le graphique affiche :
 - **Tooltip** : Valeurs exactes au survol
 
 Les données montrent :
-- Une production maximale en été (Juin-Juillet)
-- Une consommation relativement constante
-- Un bilan énergétique positif toute l'année
+
+**Consommation (barres rouges) :**
+- **Au plus BAS** : Janvier (~0,35 kWh/jour) et Décembre (~0,38 kWh/jour)
+- **Au plus HAUT** : Juillet (~0,58 kWh/jour)
+- La consommation varie selon le coefficient d'ensoleillement `fm`
+- Plus faible en hiver, plus élevée en été
+
+**Production (barres vertes) :**
+- Maximale en Mai-Juillet (journées longues, fort ensoleillement)
+- Minimale en Novembre-Janvier (journées courtes)
+- Calculée avec panneau 500W, inclinaison 37°, latitude 50°
+
+**Bilan énergétique :**
+- Production > Consommation toute l'année
+- Excédent important en été
+- Autonomie hivernale validée : 3-5 jours sans soleil
 
 ---
 
