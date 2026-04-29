@@ -638,8 +638,8 @@ function renderMatlabChart(chartId = 'matlab-chart'){
   const textColor=isDark?'#8899B4':'#4A5568';
   const gridColor=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
   
-  const traceProd={x:MO,y:Ept.map(e=>e/1000),name:'Production',type:'bar',marker:{color:'#00D4A0'}};
-  const traceCons={x:MO,y:Em_arr.map(e=>e/1000),name:'Consommation',type:'bar',marker:{color:'#EF4444'}};
+  const traceProd={x:MO,y:Ept.map(e=>e/1000),name:'Production',type:'bar',marker:{color:'#00D4A0'},hovertemplate:'%{y:.1f} kWh<br><extra></extra>'};
+  const traceCons={x:MO,y:Em_arr.map(e=>e/1000),name:'Consommation (pire cas)',type:'bar',marker:{color:'#EF4444'},hovertemplate:'%{y:.1f} kWh<br><extra>Pire scénario de consommation</extra>'};
   
   const layout={
     title:'Production vs Consommation mensuelle',
