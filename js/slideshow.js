@@ -17,18 +17,19 @@ const slides = [
     cards: [
       { icon: 'fa-mobile-alt', title: 'Recharge mobile', desc: 'Besoin de recharger ses appareils en extérieur' },
       { icon: 'fa-info-circle', title: 'Information urbaine', desc: 'Accès aux données de la ville en temps réel' },
-      { icon: 'fa-solar-panel', title: 'Autonomie énergétique', desc: 'Fonctionner sans raccordement au réseau électrique' },
-      { icon: 'fa-plug', title: 'Installation facile', desc: 'Solution plug & play déployable rapidement' }
+      { icon: 'fa-solar-panel', title: 'Autonomie énergétique', desc: 'Fonctionner sans raccordement au réseau électrique' }
     ],
     type: 'cards'
   },
   {
     icon: 'fa-users',
     title: 'Notre équipe',
-    members: [
+    membersTop: [
       { icon: 'fa-code', role: 'Programmation, Présentation', name: 'Axel', desc: '' },
       { icon: 'fa-search', role: 'Recherche composants, Solutions techniques', name: 'Kenzo', desc: 'Présentation, Communication' },
-      { icon: 'fa-cube', role: 'Programmation, Modélisation 3D', name: 'Yohan', desc: '' },
+      { icon: 'fa-cube', role: 'Programmation, Modélisation 3D', name: 'Yohan', desc: '' }
+    ],
+    membersBottom: [
       { icon: 'fa-drafting-compass', role: 'Schémas, Plans, Design', name: 'Lorenzo', desc: 'Budget, Recherche composants' },
       { icon: 'fa-bolt', role: 'Électrique, Normes', name: 'Mathéo', desc: 'Communication' }
     ],
@@ -40,7 +41,7 @@ const slides = [
     features: [
       { icon: 'fa-sun', title: 'Autonomie énergétique', desc: 'Panneau solaire intégré pour une alimentation 100% renouvelable' },
       { icon: 'fa-layer-group', title: 'Multi-services', desc: 'Recharge USB, écran tactile, données environnementales et transports' },
-      { icon: 'fa-plug-circle-check', title: 'Plug & Play', desc: 'Installation rapide sans travaux de raccordement électrique' }
+      { icon: 'fa-tools', title: 'Installation modulaire', desc: 'Structure en bois à construire, assemblage sur site' }
     ],
     type: 'features'
   },
@@ -49,7 +50,7 @@ const slides = [
     title: 'Fonctionnalités principales',
     services: [
       { icon: 'fab fa-usb', title: 'Recharge USB', desc: 'Ports USB-A et USB-C disponibles' },
-      { icon: 'fa-touchscreen', title: 'Écran tactile', desc: 'Interface interactive 7 pouces' },
+      { icon: 'fa-tv', title: 'Écran tactile', desc: 'Interface interactive 7 pouces' },
       { icon: 'fa-cloud-sun', title: 'Météo', desc: 'Données météorologiques en temps réel' },
       { icon: 'fa-bus', title: 'Transports', desc: 'Horaires de bus en direct' },
       { icon: 'fa-newspaper', title: 'Actualités', desc: 'Infos locales et événements' }
@@ -112,11 +113,11 @@ const slides = [
     icon: 'fa-ruler-combined',
     title: 'Dimensions & installation',
     dimensions: [
-      { icon: 'fa-arrows-alt-h', value: 'Longueur: 2 m' },
-      { icon: 'fa-arrows-alt-v', value: 'Hauteur: 2 m' },
-      { icon: 'fa-depth', value: 'Profondeur: 60 cm' }
+      { icon: 'fa-arrows-alt-h', value: 'Longueur totale: 2,02 m (avec piliers)' },
+      { icon: 'fa-bed', value: 'Assise: 1,80 m' },
+      { icon: 'fa-arrows-alt-v', value: 'Hauteur max: 2 m (sans panneau)' }
     ],
-    installation: 'Fixation par platines boulonnées au sol',
+    installation: 'Fixation par platines boulonnées au sol pour déplacement facile',
     type: 'dimensions'
   },
   {
@@ -224,14 +225,26 @@ function renderSlide(slide) {
         <div class="slide-content">
           <h2><i class="fas ${slide.icon}"></i> ${slide.title}</h2>
           <div class="team-grid">
-            ${slide.members.map(member => `
-              <div class="team-member">
-                <i class="fas ${member.icon}"></i>
-                <h4>${member.role}</h4>
-                <p class="member-name">${member.name}</p>
-                <p>${member.desc}</p>
-              </div>
-            `).join('')}
+            <div class="team-top">
+              ${slide.membersTop.map(member => `
+                <div class="team-member">
+                  <i class="fas ${member.icon}"></i>
+                  <h4>${member.role}</h4>
+                  <p class="member-name">${member.name}</p>
+                  <p>${member.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+            <div class="team-bottom">
+              ${slide.membersBottom.map(member => `
+                <div class="team-member">
+                  <i class="fas ${member.icon}"></i>
+                  <h4>${member.role}</h4>
+                  <p class="member-name">${member.name}</p>
+                  <p>${member.desc}</p>
+                </div>
+              `).join('')}
+            </div>
           </div>
         </div>
       `;

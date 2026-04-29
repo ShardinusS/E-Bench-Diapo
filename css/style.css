@@ -377,9 +377,21 @@ a:hover { color: var(--primary-hover); }
 
 /* Team Grid */
 .team-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.team-top, .team-bottom {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
+}
+
+.team-bottom {
+  margin-top: 8px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
 }
 
 .team-member {
@@ -895,7 +907,8 @@ a:hover { color: var(--primary-hover); }
   }
 
   .cards-grid,
-  .team-grid,
+  .team-top,
+  .team-bottom,
   .services-grid {
     grid-template-columns: 1fr;
   }
