@@ -26,11 +26,11 @@ const slides = [
     icon: 'fa-users',
     title: 'Notre équipe',
     members: [
-      { icon: 'fa-cog', role: 'Mécanique', name: 'Membre 1', desc: 'Conception SolidWorks' },
-      { icon: 'fa-bolt', role: 'Électrique', name: 'Membre 2', desc: 'Système d\'alimentation' },
-      { icon: 'fa-code', role: 'Informatique', name: 'Membre 3', desc: 'Développement logiciel' },
-      { icon: 'fa-chart-line', role: 'Énergétique', name: 'Membre 4', desc: 'Étude MATLAB' },
-      { icon: 'fa-project-diagram', role: 'Chef de projet', name: 'Membre 5', desc: 'Coordination globale' }
+      { icon: 'fa-code', role: 'Programmation, Présentation', name: 'Axel', desc: '' },
+      { icon: 'fa-search', role: 'Recherche composants, Solutions techniques', name: 'Kenzo', desc: 'Présentation, Communication' },
+      { icon: 'fa-cube', role: 'Programmation, Modélisation 3D', name: 'Yohan', desc: '' },
+      { icon: 'fa-drafting-compass', role: 'Schémas, Plans, Design', name: 'Lorenzo', desc: 'Budget, Recherche composants' },
+      { icon: 'fa-bolt', role: 'Électrique, Normes', name: 'Mathéo', desc: 'Communication' }
     ],
     type: 'team'
   },
