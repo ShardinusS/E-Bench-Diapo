@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Bench 2026 — Analyse Énergétique MATLAB</title>
+<meta name="description" content="Analyse énergétique MATLAB : course solaire, consommation, bilan annuel, batterie, inclinaison, courbe I-V et simulation 7 jours — Somme (50°N)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ebench.github.io/04-ebench-matlab-analysis.html">
+<meta property="og:title" content="E-Bench 2026 — Analyse Énergétique MATLAB">
+<meta property="og:description" content="Analyse MATLAB : production solaire, consommation, batterie, inclinaison optimale — E-Bench Somme 50°N.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ebench.github.io/04-ebench-matlab-analysis.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='13' width='28' height='3.5' rx='1.75' fill='%2300D4A0'/%3E%3Crect x='2' y='17.5' width='28' height='3.5' rx='1.75' fill='%2300D4A0' opacity='.65'/%3E%3Crect x='5' y='4' width='22' height='7' rx='1.5' fill='%233B82F6' opacity='.4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js" defer crossorigin="anonymous"></script>
+<link rel="stylesheet" href="assets/css/theme.css">
+<style>
+/* ════════════════════════════════════════════
+   PAGE-SPECIFIC STYLES (extends theme.css)
+   ════════════════════════════════════════════ */
+[data-theme="dark"]{--bg:#080C14;--bg-2:#0D1220;--bg-card:#111827;--text:#F0F4FF;--text-sub:#8899B4;--text-muted:#6B7A94;--primary:#00D4A0;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--border:rgba(255,255,255,.07);--border-glow:rgba(0,212,160,.35);--nav-bg:rgba(8,12,20,.85);--shadow:0 0 0 1px rgba(0,212,160,.08),0 20px 60px rgba(0,0,0,.5);--glow:0 0 40px rgba(0,212,160,.15);--plotbg:#0D1220;--plotgrid:rgba(255,255,255,.06);--plottext:#8899B4}
+[data-theme="light"]{--bg:#F5F0E8;--bg-2:#FAF6F0;--bg-card:#FFFCF7;--text:#0A0F1E;--text-sub:#4A5568;--text-muted:#6B7280;--primary:#00A87E;--blue:#2563EB;--amber:#D97706;--red:#DC2626;--border:rgba(0,0,0,.08);--border-glow:rgba(0,168,126,.35);--nav-bg:rgba(245,240,232,.85);--shadow:0 0 0 1px rgba(0,168,126,.08),0 20px 60px rgba(0,0,0,.08);--glow:0 0 40px rgba(0,168,126,.08);--plotbg:#FAF6F0;--plotgrid:rgba(0,0,0,.06);--plottext:#4A5568}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background .4s,color .4s;display:flex;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+h1,h2,h3{font-family:'Bebas Neue',cursive;font-weight:400;letter-spacing:.04em}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:var(--primary);text-decoration:none}
+
+/* SIDEBAR */
+.sidebar{width:280px;background:var(--bg-card);border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s,background .4s,border-color .4s;scrollbar-width:thin}
+.sidebar-header{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-header .logo{display:flex;align-items:center;gap:10px;font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--text);margin-bottom:4px}
+.sidebar-header .logo span{color:var(--primary)}
+.sidebar-header p{font-size:.75rem;color:var(--text-muted)}
+.sidebar-header .controls{display:flex;gap:8px;margin-top:12px}
+.sidebar-header .controls button{flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-sub);cursor:pointer;font-size:.7rem;font-family:'Space Grotesk',sans-serif;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:5px}
+.sidebar-header .controls button:hover{border-color:var(--primary);color:var(--primary)}
+.nav-list{list-style:none;padding:8px 0}
+.nav-item{padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;border-left:3px solid transparent;font-size:.82rem;color:var(--text-sub);user-select:none}
+.nav-item:hover{background:rgba(0,212,160,.04);color:var(--text)}
+.nav-item.active{background:rgba(0,212,160,.06);border-left-color:var(--primary);color:var(--primary)}
+.nav-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;background:var(--bg-2);border:1px solid var(--border);transition:all .3s;font-family:'JetBrains Mono',monospace}
+.nav-item.active .nav-num{background:var(--primary);color:#000;border-color:var(--primary)}
+.nav-item i{width:16px;text-align:center;font-size:.75rem}
+
+/* MAIN */
+.main{margin-left:280px;flex:1;padding:32px;max-width:calc(100vw - 280px);position:relative;z-index:1}
+.mpage{display:none}
+.mpage.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-header{margin-bottom:28px}
+.page-header h2{font-size:2.4rem;line-height:1.05;margin-bottom:6px}
+.page-header h2 span{color:var(--primary)}
+.page-header p{color:var(--text-sub);font-size:.9rem}
+
+/* SUMMARY BOXES */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.summary-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;border-left:3px solid var(--primary);transition:background .4s,border-color .4s}
+.summary-box.green{border-left-color:var(--primary)}
+.summary-box.orange{border-left-color:var(--amber)}
+.summary-box.red{border-left-color:var(--red)}
+.summary-box.blue{border-left-color:var(--blue)}
+.summary-box .label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.summary-box .value{font-family:'Bebas Neue',cursive;font-size:1.8rem;margin-top:2px;line-height:1.1}
+.summary-box .unit{font-family:'Space Grotesk',sans-serif;font-size:.75rem;color:var(--text-muted);font-weight:400}
+
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);transition:background .4s,border-color .4s}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif}
+.card h3 i{color:var(--primary);font-size:.85rem}
+.chart-container{width:100%;min-height:380px}
+
+/* CODE BLOCK */
+.code-toggle{background:var(--bg-2);border:1px solid var(--border);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--text-muted);margin-bottom:12px;transition:all .2s;font-family:'Space Grotesk',sans-serif;display:inline-flex;align-items:center;gap:6px}
+.code-toggle:hover{border-color:var(--primary);color:var(--primary)}
+.code-block{display:none;background:#0a0e18;color:#d4d4d4;padding:20px;border-radius:10px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.7;max-height:400px;overflow-y:auto;margin-bottom:16px;border:1px solid var(--border);white-space:pre;tab-size:4}
+.code-block.visible{display:block}
+.code-block .cm{color:#6a9955}
+.code-block .kw{color:#569cd6}
+.code-block .nb{color:#b5cea8}
+.code-block .st{color:#ce9178}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.data-table th{background:var(--bg-2);padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-sub)}
+.data-table td{padding:8px 14px;border-bottom:1px solid var(--border)}
+.data-table tr:hover td{background:rgba(0,212,160,.02)}
+.positive{color:var(--primary);font-weight:600}
+.negative{color:var(--red);font-weight:600}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--primary);color:#000;border:none;border-radius:8px;padding:10px 14px;font-size:1.1rem;cursor:pointer}
+
+/* BACK LINK */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--text-muted);padding:6px 12px;border-radius:8px;border:1px solid var(--border);transition:all .3s;margin-bottom:20px;cursor:pointer;background:transparent;font-family:'Space Grotesk',sans-serif}
+.back-link:hover{border-color:var(--primary);color:var(--primary)}
+
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0;padding:16px;padding-top:56px}
+.hamburger{display:block}
+.summary-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+.summary-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="5" y="4" width="22" height="7" rx="1.5" fill="currentColor" opacity=".2"/><rect x="2" y="13" width="28" height="3.5" rx="1.75" fill="var(--primary)"/><rect x="2" y="17.5" width="28" height="3.5" rx="1.75" fill="var(--primary)" opacity=".65"/><rect x="6" y="21" width="2.5" height="8" rx="1.25" fill="currentColor" opacity=".3"/><rect x="15" y="21" width="2.5" height="8" rx="1.25" fill="currentColor" opacity=".3"/><rect x="23.5" y="21" width="2.5" height="8" rx="1.25" fill="currentColor" opacity=".3"/></svg>
+      E<span>-</span>Bench <span>2026</span>
+    </div>
+    <p>Analyse énergétique MATLAB — Somme (50°N)</p>
+    <div class="controls">
+      <button onclick="window.open('index.html','_self')"><i class="fa-solid fa-arrow-left"></i> Site principal</button>
+      <button onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-circle-half-stroke"></i> Thème</button>
+    </div>
+  </div>
+  <ul class="nav-list">
+    <li class="nav-item active" onclick="showMPage(0)"><span class="nav-num">01</span><i class="fa-solid fa-sun"></i> Course Solaire</li>
+    <li class="nav-item" onclick="showMPage(1)"><span class="nav-num">02</span><i class="fa-solid fa-bolt"></i> Profil Consommation</li>
+    <li class="nav-item" onclick="showMPage(2)"><span class="nav-num">03</span><i class="fa-solid fa-chart-bar"></i> Bilan Annuel</li>
+    <li class="nav-item" onclick="showMPage(3)"><span class="nav-num">04</span><i class="fa-solid fa-battery-full"></i> Batterie</li>
+    <li class="nav-item" onclick="showMPage(4)"><span class="nav-num">05</span><i class="fa-solid fa-sliders"></i> Inclinaison</li>
+    <li class="nav-item" onclick="showMPage(5)"><span class="nav-num">06</span><i class="fa-solid fa-wave-square"></i> Courbe I-V / MPPT</li>
+    <li class="nav-item" onclick="showMPage(6)"><span class="nav-num">07</span><i class="fa-solid fa-calendar-week"></i> Simulation 7 Jours</li>
+  </ul>
+</nav>
+
+<div class="main">
+
+<!-- PAGE 01 -->
+<div class="mpage active" id="mp-0">
+  <div class="page-header"><h2>01 — Course <span>Solaire</span></h2><p>Trajectoire du soleil, heures de lever/coucher, durée d'ensoleillement — latitude 50°N (Somme)</p></div>
+  <div class="summary-grid" id="sum-0"></div>
+  <div class="card"><h3><i class="fa-solid fa-chart-line"></i> Élévation solaire au cours de la journée</h3><div id="ch-elev" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-compass"></i> Diagramme solaire (Azimut vs Élévation)</h3><div id="ch-solar-diag" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-calendar-days"></i> Durée d'ensoleillement annuelle</h3><div id="ch-sunshine" class="chart-container"></div></div>
+  <button class="code-toggle" onclick="toggleCode('code-01')"><i class="fa-solid fa-code"></i> Code MATLAB source</button>
+  <pre class="code-block" id="code-01"><span class="cm">%% 01_Course_Solaire_E_Bench.m</span>
+<span class="cm">% Analyse de la course solaire à la latitude de la Somme (50°N)</span>
+<span class="kw">lat</span> = <span class="nb">50.0</span>;  <span class="cm">% Latitude Somme</span>
+<span class="kw">dt</span> = <span class="nb">0.05</span>;   <span class="cm">% Pas de temps (heures)</span>
+<span class="kw">hours</span> = <span class="nb">0</span>:dt:<span class="nb">24</span>;
+<span class="kw">days_of_year</span> = [<span class="nb">80, 172, 266, 355</span>];
+<span class="cm">% Déclinaison solaire (Spencer)</span>
+B = <span class="nb">2</span>*pi*(simulation_day - <span class="nb">1</span>)/<span class="nb">365</span>;
+delta = (<span class="nb">0.006918</span> - <span class="nb">0.399912</span>*cos(B) + <span class="nb">0.070257</span>*sin(B) - ...
+        <span class="nb">0.006758</span>*cos(<span class="nb">2</span>*B) + <span class="nb">0.000907</span>*sin(<span class="nb">2</span>*B) - ...
+        <span class="nb">0.002697</span>*cos(<span class="nb">3</span>*B) + <span class="nb">0.00148</span>*sin(<span class="nb">3</span>*B)) * <span class="nb">180</span>/pi;
+<span class="cm">% ... (voir rapport complet dans le PDF)</span></pre>
+</div>
+
+<!-- PAGE 02 -->
+<div class="mpage" id="mp-1">
+  <div class="page-header"><h2>02 — Profil de <span>Consommation</span></h2><p>Décomposition par composant, modes jour/nuit/veille du banc E-Bench</p></div>
+  <div class="summary-grid" id="sum-1"></div>
+  <div class="card"><h3><i class="fa-solid fa-layer-group"></i> Profil journalier empilé</h3><div id="ch-conso-stack" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-chart-pie"></i> Répartition énergétique</h3><div id="ch-conso-pie" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-gauge-high"></i> Puissance par mode</h3><div id="ch-conso-modes" class="chart-container"></div></div>
+</div>
+
+<!-- PAGE 03 -->
+<div class="mpage" id="mp-2">
+  <div class="page-header"><h2>03 — Bilan Énergétique <span>Annuel</span></h2><p>Production vs consommation mois par mois — Panneau 500Wc, inclinaison 37°</p></div>
+  <div class="summary-grid" id="sum-2"></div>
+  <div class="card"><h3><i class="fa-solid fa-chart-column"></i> Production vs Consommation mensuelle</h3><div id="ch-bilan-monthly" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-scale-balanced"></i> Bilan net mensuel</h3><div id="ch-bilan-net" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-cloud-sun"></i> Facteurs météo Picardie</h3><div id="ch-meteo" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-table"></i> Tableau récapitulatif</h3><div id="bilan-table"></div></div>
+</div>
+
+<!-- PAGE 04 -->
+<div class="mpage" id="mp-3">
+  <div class="page-header"><h2>04 — Dimensionnement <span>Batterie</span></h2><p>Autonomie, scénarios de décharge, cycles — Ultracell UCG100-12</p></div>
+  <div class="summary-grid" id="sum-3"></div>
+  <div class="card"><h3><i class="fa-solid fa-battery-three-quarters"></i> Autonomie vs Puissance</h3><div id="ch-bat-auto" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-chart-area"></i> Décharge 72h sans soleil</h3><div id="ch-bat-dchg" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-rotate"></i> Durée de vie (Cycles vs DoD)</h3><div id="ch-bat-cycles" class="chart-container"></div></div>
+</div>
+
+<!-- PAGE 05 -->
+<div class="mpage" id="mp-4">
+  <div class="page-header"><h2>05 — Inclinaison <span>Optimale</span></h2><p>Production en fonction de l'angle pour différentes saisons</p></div>
+  <div class="summary-grid" id="sum-4"></div>
+  <div class="card"><h3><i class="fa-solid fa-mountain-sun"></i> Production vs Inclinaison (3 saisons)</h3><div id="ch-tilt-season" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-chart-line"></i> Production annuelle vs Inclinaison</h3><div id="ch-tilt-annual" class="chart-container"></div></div>
+</div>
+
+<!-- PAGE 06 -->
+<div class="mpage" id="mp-5">
+  <div class="page-header"><h2>06 — Courbe I-V / <span>MPPT vs PWM</span></h2><p>Caractéristique I-V du panneau TrinaSolar 500W — Comparaison régulateurs</p></div>
+  <div class="summary-grid" id="sum-5"></div>
+  <div class="card"><h3><i class="fa-solid fa-wave-square"></i> Caractéristique I-V</h3><div id="ch-iv" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-bolt"></i> Caractéristique P-V</h3><div id="ch-pv" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-code-compare"></i> MPPT vs PWM — Journée d'été</h3><div id="ch-mppt-pwm" class="chart-container"></div></div>
+</div>
+
+<!-- PAGE 07 -->
+<div class="mpage" id="mp-6">
+  <div class="page-header"><h2>07 — Simulation <span>7 Jours</span></h2><p>Semaine de juin avec météo variable — Scénario réaliste Picardie</p></div>
+  <div class="summary-grid" id="sum-6"></div>
+  <div class="card"><h3><i class="fa-solid fa-solar-panel"></i> Production PV vs Consommation</h3><div id="ch-sim-power" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-battery-half"></i> État de charge (SOC)</h3><div id="ch-sim-soc" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-chart-column"></i> Bilan journalier</h3><div id="ch-sim-daily" class="chart-container"></div></div>
+  <div class="card"><h3><i class="fa-solid fa-table"></i> Tableau récapitulatif</h3><div id="sim-table"></div></div>
+</div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════ NAVIGATION ═══════════════ */
+const rendered = [false,false,false,false,false,false,false];
+function showMPage(idx){
+  document.querySelectorAll('.mpage').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('mp-'+idx).classList.add('active');
+  document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  document.querySelector('.sidebar').classList.remove('open');
+  if(!rendered[idx]){renderers[idx]();rendered[idx]=true}
+  setTimeout(()=>window.dispatchEvent(new Event('resize')),120);
+}
+window.showMPage=showMPage;
+function toggleCode(id){document.getElementById(id).classList.toggle('visible')}
+window.toggleCode=toggleCode;
+
+/* ═══════════════ THEME ═══════════════ */
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('ebench-theme',t);if(rendered.some(r=>r))setTimeout(replotAll,50)}
+window.toggleTheme=function(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')};
+(function(){var s=localStorage.getItem('ebench-theme');if(s)setTheme(s)})();
+function replotAll(){rendered.forEach((r,i)=>{if(r){var el=document.getElementById('mp-'+i);el.querySelectorAll('.chart-container').forEach(c=>{if(c.data)Plotly.relayout(c,plotLayout())})}})}
+
+/* ═══════════════ MATH HELPERS ═══════════════ */
+const D=Math.PI/180;
+const sind=a=>Math.sin(a*D),cosd=a=>Math.cos(a*D),tand=a=>Math.tan(a*D);
+const asind=x=>Math.asin(Math.max(-1,Math.min(1,x)))/D;
+const acosd=x=>Math.acos(Math.max(-1,Math.min(1,x)))/D;
+function solarDecl(day){const B=2*Math.PI*(day-1)/365;return(0.006918-0.399912*Math.cos(B)+0.070257*Math.sin(B)-0.006758*Math.cos(2*B)+0.000907*Math.sin(2*B)-0.002697*Math.cos(3*B)+0.00148*Math.sin(3*B))*180/Math.PI}
+function solarElev(lat,d,om){return asind(Math.max(0,sind(d)*sind(lat)+cosd(d)*cosd(lat)*cosd(om)))}
+function hottel(alpha,day,alt){const I0=1367,eps=1+0.033*Math.cos(2*Math.PI*day/365),Ion=I0*eps;const sA=Math.max(.001,sind(alpha));const a0=.4237-.00821*Math.pow(6-alt,2),a1=.5055+.00595*Math.pow(6.5-alt,2),k=.2711+.01858*Math.pow(2.5-alt,2);const tb=a0+a1*Math.exp(-k/sA);const Ibn=Ion*tb,Idh=.3*Ion*(1-tb)*sA,Igh=Ibn*sA+Idh;return{Ibn,Idh,Igh,Ion}}
+function pvPow(hrs,day,lat,alt,tilt,Pn,eta,mf){const d=solarDecl(day),pw=[],ir=[];for(const h of hrs){const om=15*(h-12),a=solarElev(lat,d,om);if(a<=0){pw.push(0);ir.push(0);continue}const{Ibn,Idh,Igh}=hottel(a,day,alt);const ct=Math.max(0,sind(d)*sind(lat-tilt)+cosd(d)*cosd(lat-tilt)*cosd(om));const It=(Ibn*ct+Idh*(1+cosd(tilt))/2+Igh*.2*(1-cosd(tilt))/2)*(mf||1);ir.push(It);pw.push(Math.min(Pn,It/1000*Pn*eta))}return{powers:pw,irrs:ir}}
+function trapz(x,y){let s=0;for(let i=1;i<x.length;i++)s+=(x[i]-x[i-1])*(y[i]+y[i-1])/2;return s}
+function linspace(a,b,n){const r=[];for(let i=0;i<n;i++)r.push(a+(b-a)*i/(n-1));return r}
+function sumBox(l,v,u,c){return`<div class="summary-box ${c||''}"><div class="label">${l}</div><div class="value">${v} <span class="unit">${u}</span></div></div>`}
+const MO=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+function plotLayout(extra){
+  const t=document.documentElement.getAttribute('data-theme');
+  const isDark=t==='dark';
+  return Object.assign({
+    font:{family:'Space Grotesk,sans-serif',color:isDark?'#8899B4':'#4A5568'},
+    paper_bgcolor:'transparent',
+    plot_bgcolor:isDark?'#0D1220':'#FAF6F0',
+    margin:{l:55,r:25,t:40,b:50},
+    xaxis:{gridcolor:isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',zerolinecolor:isDark?'rgba(255,255,255,.1)':'rgba(0,0,0,.1)'},
+    yaxis:{gridcolor:isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',zerolinecolor:isDark?'rgba(255,255,255,.1)':'rgba(0,0,0,.1)'}
+  },extra||{});
+}
+const pCfg={responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']};
+
+/* ═══════════════ SCRIPT 01: COURSE SOLAIRE ═══════════════ */
+function render01(){
+const lat=50,dt=.2,hrs=[];for(let h=0;h<=24;h+=dt)hrs.push(h);
+const days=[80,172,266,355],dn=['Éq. printemps','Sol. été','Éq. automne','Sol. hiver'],clr=['#33b533','#ff8800','#cc6600','#3B82F6'];
+const t1=days.map((d,i)=>{const dl=solarDecl(d),el=hrs.map(h=>solarElev(lat,dl,15*(h-12)));return{x:hrs,y:el,name:dn[i],line:{color:clr[i],width:2.5}}});
+Plotly.newPlot('ch-elev',t1,plotLayout({title:'Élévation du soleil — Somme (50°N)',xaxis:{title:'Heure solaire',range:[4,22],dtick:1},yaxis:{title:'Élévation (°)',range:[0,70]}}),pCfg);
+const t2=days.map((d,i)=>{const dl=solarDecl(d),az=[],el=[];for(const h of hrs){const om=15*(h-12),a=solarElev(lat,dl,om);if(a<.5)continue;let cA=(sind(dl)-sind(lat)*sind(a))/(cosd(lat)*cosd(a));cA=Math.max(-1,Math.min(1,cA));let azm=acosd(cA);if(om<0)azm=-azm;az.push(azm);el.push(a)}return{x:az,y:el,name:dn[i],mode:'lines',line:{color:clr[i],width:2.5}}});
+Plotly.newPlot('ch-solar-diag',t2,plotLayout({title:'Diagramme solaire',xaxis:{title:'Azimut (° depuis Sud)',range:[-140,140]},yaxis:{title:'Élévation (°)',range:[0,70]},shapes:[{type:'line',y0:37,y1:37,x0:-140,x1:140,line:{color:'#F59E0B',dash:'dash',width:1.5}}],annotations:[{x:-100,y:39,text:'Panneau 37°',showarrow:false,font:{size:10,color:'#F59E0B'}}]}),pCfg);
+const ad=[];for(let d=1;d<=365;d++)ad.push(d);
+const dur=ad.map(d=>{const dl=solarDecl(d);let c=-tand(dl)*tand(lat);c=Math.max(-1,Math.min(1,c));return 2*acosd(c)/15});
+const mx=Math.max(...dur),mn=Math.min(...dur);
+Plotly.newPlot('ch-sunshine',[{x:ad,y:dur,fill:'tozeroy',fillcolor:'rgba(0,212,160,.15)',line:{color:'#00D4A0',width:2}}],plotLayout({title:"Durée d'ensoleillement théorique",xaxis:{title:"Jour de l'année",tickvals:[1,32,60,91,121,152,182,213,244,274,305,335],ticktext:MO},yaxis:{title:'Durée (h)',range:[6,18]},annotations:[{x:dur.indexOf(mx)+1,y:mx,text:`Max: ${mx.toFixed(1)}h`,showarrow:true,arrowhead:2},{x:dur.indexOf(mn)+1,y:mn,text:`Min: ${mn.toFixed(1)}h`,showarrow:true,arrowhead:2,ay:30}]}),pCfg);
+document.getElementById('sum-0').innerHTML=sumBox('Max (été)',mx.toFixed(1),'h','green')+sumBox('Min (hiver)',mn.toFixed(1),'h','orange')+sumBox('Latitude','50.0','°N','')+sumBox('Variation',`${(mx-mn).toFixed(1)}`,'h','blue');
+}
+
+/* ═══════════════ SCRIPT 02: CONSOMMATION ═══════════════ */
+function render02(){
+const hrs=[];for(let h=0;h<=24;h+=1/60)hrs.push(h);
+const Pr_a=5,Pr_p=10,Pr_i=3,Pe=2.5,Pp=.5,Pl=18,Pu=10,Pd_a=1.5,Pd_v=.5;
+const R=[],E=[],C=[],L=[],U=[],DC=[];
+for(const h of hrs){C.push(Pp);if(h<6){R.push(Pr_i);E.push(0);L.push(0);U.push(0);DC.push(Pd_v)}else if(h<8){R.push(Pr_a);E.push(Pe*.3);L.push(0);U.push(0);DC.push(Pd_a)}else if(h<12){R.push(Pr_a);E.push(Pe*.6);L.push(0);U.push(Pu*.4);DC.push(Pd_a)}else if(h<14){R.push(Pr_p);E.push(Pe);L.push(0);U.push(Pu);DC.push(Pd_a)}else if(h<18){R.push(Pr_a);E.push(Pe*.5);L.push(0);U.push(Pu*.3);DC.push(Pd_a)}else if(h<22){R.push(Pr_p);E.push(Pe*.7);L.push(Pl);U.push(Pu*.5);DC.push(Pd_a)}else{R.push(Pr_i);E.push(0);L.push(0);U.push(0);DC.push(Pd_v)}}
+const st=10,h_s=[],r_s=[],e_s=[],c_s=[],l_s=[],u_s=[],d_s=[];
+for(let i=0;i<hrs.length;i+=st){h_s.push(hrs[i]);r_s.push(R[i]);e_s.push(E[i]);c_s.push(C[i]);l_s.push(L[i]);u_s.push(U[i]);d_s.push(DC[i])}
+const nm=['Raspberry Pi 3B','Écran LCD 7"','Capteur PIR','Bande LED','Ports USB','Pertes DC-DC'],cl=['#3399ee','#4dcc66','#e6b333','#ff6619','#b333cc','#808080'],ds=[r_s,e_s,c_s,l_s,u_s,d_s];
+Plotly.newPlot('ch-conso-stack',ds.map((d,i)=>({x:h_s,y:d,name:nm[i],stackgroup:'one',fillcolor:cl[i],line:{color:cl[i],width:0}})),plotLayout({title:'Profil de consommation journalier',xaxis:{title:'Heure',range:[0,24],dtick:2},yaxis:{title:'Puissance (W)'}}),pCfg);
+const En=[R,E,C,L,U,DC].map(p=>trapz(hrs,p)),Et=En.reduce((a,b)=>a+b,0);
+Plotly.newPlot('ch-conso-pie',[{values:En,labels:nm,type:'pie',marker:{colors:cl},textinfo:'label+percent',textfont:{size:10}}],plotLayout({title:`Répartition — Total: ${Et.toFixed(0)} Wh/jour`}),pCfg);
+const mN=['Veille','Réveil','Actif','Pic','Soir'],mP=[Pr_i+Pp+Pd_v,Pr_a+Pe*.3+Pp+Pd_a,Pr_a+Pe*.6+Pp+Pu*.4+Pd_a,Pr_p+Pe+Pp+Pu+Pd_a,Pr_p+Pe*.7+Pp+Pl+Pu*.5+Pd_a],mC=['#4d4db3','#66b3e6','#4dcc4d','#ff9900','#e63333'];
+Plotly.newPlot('ch-conso-modes',[{x:mN,y:mP,type:'bar',marker:{color:mC},text:mP.map(v=>v.toFixed(1)+'W'),textposition:'outside'}],plotLayout({title:'Puissance par mode',yaxis:{title:'Puissance (W)'}}),pCfg);
+const Pt=hrs.map((_,i)=>R[i]+E[i]+C[i]+L[i]+U[i]+DC[i]);
+document.getElementById('sum-1').innerHTML=sumBox('Total/jour',Et.toFixed(0),'Wh','')+sumBox('Puiss. moyenne',(Et/24).toFixed(1),'W','')+sumBox('Pic max',Math.max(...Pt).toFixed(1),'W','red')+sumBox('Veille min',Math.min(...Pt).toFixed(1),'W','green');
+}
+
+/* ═══════════════ SCRIPT 03: BILAN ANNUEL ═══════════════ */
+function render03(){
+const lat=50,alt=.05,tilt=37,Pn=500,eta=.95,Pl=15;
+const jm=[15,46,74,105,135,166,196,227,258,288,319,349],jp=[31,28,31,30,31,30,31,31,30,31,30,31],fm=[.30,.35,.42,.48,.52,.55,.55,.52,.48,.38,.30,.25];
+const dt=.2,hrs=[];for(let h=0;h<=24;h+=dt)hrs.push(h);
+const Ec=[],Er=[],Em=[],Eb=[];
+for(let m=0;m<12;m++){const{powers}=pvPow(hrs,jm[m],lat,alt,tilt,Pn,eta);const ec=trapz(hrs,powers),er=ec*fm[m];Ec.push(ec);Er.push(er);const cm=Pl*24;Em.push(cm*jp[m]);Eb.push(er*jp[m]-cm*jp[m])}
+const Ept=Er.map((e,i)=>e*jp[i]);
+Plotly.newPlot('ch-bilan-monthly',[{x:MO,y:Ept.map(e=>e/1000),name:'Production',type:'bar',marker:{color:'#00D4A0'}},{x:MO,y:Em.map(e=>e/1000),name:'Consommation',type:'bar',marker:{color:'#EF4444'}}],plotLayout({barmode:'group',title:'Production vs Consommation mensuelle',yaxis:{title:'Énergie (kWh)'}}),pCfg);
+Plotly.newPlot('ch-bilan-net',[{x:MO,y:Eb.map(e=>e/1000),type:'bar',marker:{color:Eb.map(e=>e>=0?'#00D4A0':'#EF4444')},text:Eb.map(e=>(e>=0?'+':'')+(e/1000).toFixed(1)),textposition:'outside'}],plotLayout({title:'Bilan net mensuel',yaxis:{title:'kWh'},shapes:[{type:'line',y0:0,y1:0,x0:-.5,x1:11.5,line:{color:'#8899B4',width:1}}]}),pCfg);
+Plotly.newPlot('ch-meteo',[{x:MO,y:fm.map(f=>f*100),type:'bar',marker:{color:'#3B82F6'},text:fm.map(f=>(f*100).toFixed(0)+'%'),textposition:'outside'}],plotLayout({title:'Facteur météo — Picardie/Somme',yaxis:{title:'%',range:[0,70]}}),pCfg);
+let html='<table class="data-table"><thead><tr><th>Mois</th><th>Prod clair</th><th>Prod réelle</th><th>Conso</th><th>Bilan</th></tr></thead><tbody>';
+for(let m=0;m<12;m++){const b=Eb[m]/1000;html+=`<tr><td>${MO[m]}</td><td>${(Ec[m]/1000).toFixed(2)} kWh/j</td><td>${(Er[m]/1000).toFixed(2)} kWh/j</td><td>${(Pl*24/1000).toFixed(2)} kWh/j</td><td class="${b>=0?'positive':'negative'}">${b>=0?'+':''}${b.toFixed(1)} kWh</td></tr>`}
+html+='</tbody></table>';document.getElementById('bilan-table').innerHTML=html;
+const tp=Ept.reduce((a,b)=>a+b,0)/1000,tc=Em.reduce((a,b)=>a+b,0)/1000;
+document.getElementById('sum-2').innerHTML=sumBox('Prod. annuelle',tp.toFixed(0),'kWh','green')+sumBox('Conso. annuelle',tc.toFixed(0),'kWh','orange')+sumBox('Bilan net',(tp-tc>=0?'+':'')+(tp-tc).toFixed(0),'kWh',tp>=tc?'green':'red')+sumBox('Mois déficit.',Eb.filter(e=>e<0).length,'','red');
+}
+
+/* ═══════════════ SCRIPT 04: BATTERIE ═══════════════ */
+function render04(){
+const C=100,V=12,Eb=C*V,D50=.5,D80=.8,eta=.85;
+const mP=[4,12,30,42],mN=['Veille','Jour','Soir','Pic'],mC=['#00D4A0','#3B82F6','#F59E0B','#EF4444'];
+const Pr=[];for(let p=1;p<=60;p++)Pr.push(p);
+const a50=Pr.map(p=>D50*Eb*eta/p),a80=Pr.map(p=>D80*Eb*eta/p);
+const tr=[{x:Pr,y:a50,name:'DoD 50%',line:{color:'#3B82F6',width:2.5}},{x:Pr,y:a80,name:'DoD 80%',line:{color:'#EF4444',dash:'dash',width:2}}];
+mP.forEach((p,i)=>{const a=D50*Eb*eta/p;tr.push({x:[p],y:[a],mode:'markers+text',name:`${mN[i]} (${p}W)`,marker:{size:12,color:mC[i]},text:[a.toFixed(0)+'h'],textposition:'top center'})});
+Plotly.newPlot('ch-bat-auto',tr,plotLayout({title:'Autonomie batterie 100Ah/12V',xaxis:{title:'Puissance (W)',range:[0,60]},yaxis:{title:'Autonomie (h)',range:[0,160]}}),pCfg);
+const h72=[];for(let h=0;h<=72;h+=.1)h72.push(h);
+const ld=h72.map(h=>{const hm=h%24;if(hm<6)return 4;if(hm<8)return 6;if(hm<12)return 12;if(hm<14)return 18;if(hm<18)return 12;if(hm<22)return 30;return 4});
+const SOC=[100];for(let i=1;i<h72.length;i++){const e=ld[i-1]*.1/eta;SOC.push(Math.max(0,SOC[i-1]-e/Eb*100))}
+const i50=SOC.findIndex(s=>s<=50),i20=SOC.findIndex(s=>s<=20),ann=[];
+if(i50>=0)ann.push({x:h72[i50],y:50,text:h72[i50].toFixed(1)+'h',showarrow:true,arrowhead:2,font:{color:'#F59E0B'}});
+if(i20>=0)ann.push({x:h72[i20],y:20,text:h72[i20].toFixed(1)+'h',showarrow:true,arrowhead:2,ay:-30,font:{color:'#EF4444'}});
+Plotly.newPlot('ch-bat-dchg',[{x:h72,y:SOC,line:{color:'#3B82F6',width:2}}],plotLayout({title:'Décharge 72h sans soleil',xaxis:{title:'Heures',range:[0,72],dtick:6},yaxis:{title:'SOC (%)',range:[0,105]},shapes:[{type:'line',y0:50,y1:50,x0:0,x1:72,line:{color:'#F59E0B',dash:'dash'}},{type:'line',y0:20,y1:20,x0:0,x1:72,line:{color:'#EF4444'}}],annotations:ann}),pCfg);
+const Dv=[10,20,30,40,50,60,70,80,90,100],cy=[6000,3500,2500,1800,1200,800,550,400,300,200];
+Plotly.newPlot('ch-bat-cycles',[{x:Dv,y:cy,mode:'lines+markers',line:{color:'#3B82F6',width:2.5},marker:{size:8}}],plotLayout({title:'Cycles vs DoD (batterie GEL)',xaxis:{title:'DoD (%)',range:[0,105]},yaxis:{title:'Cycles',type:'log'},annotations:[{x:50,y:Math.log10(1200),text:'DoD 50% → ~1200 cycles ≈ 3.3 ans',showarrow:true,arrowhead:2,font:{color:'#EF4444'}}]}),pCfg);
+document.getElementById('sum-3').innerHTML=sumBox('Capacité','100 Ah / 12V','= 1200 Wh','')+sumBox('Utile (DoD50%)','600','Wh','green')+sumBox('Autonomie @15W',(D50*Eb*eta/15).toFixed(0),'h','orange')+sumBox('Durée de vie','~3.3','ans (DoD50%)','blue');
+}
+
+/* ═══════════════ SCRIPT 05: INCLINAISON ═══════════════ */
+function render05(){
+const lat=50,alt=.05,Pn=500,eta=.95,dt=.2,hrs=[];for(let h=0;h<=24;h+=dt)hrs.push(h);
+const tilts=[];for(let t=0;t<=90;t+=2)tilts.push(t);
+const dT=[172,355,80],dN=['Solstice été','Solstice hiver','Équinoxe'],clr=['#ff6600','#3B82F6','#00D4A0'];
+const Es=dT.map(()=>[]);
+for(const t of tilts)dT.forEach((d,s)=>{const{powers}=pvPow(hrs,d,lat,alt,t,Pn,eta);Es[s].push(trapz(hrs,powers)/1000)});
+Plotly.newPlot('ch-tilt-season',dT.map((_,s)=>({x:tilts,y:Es[s],name:dN[s],line:{color:clr[s],width:2.5}})),plotLayout({title:'Production journalière vs Inclinaison',xaxis:{title:'Inclinaison (°)',range:[0,90]},yaxis:{title:'kWh/jour'},shapes:[{type:'line',x0:37,x1:37,y0:0,y1:5,line:{color:'#F59E0B',dash:'dash',width:2}}],annotations:[{x:37,y:.1,text:'E-Bench 37°',showarrow:false,font:{size:10,color:'#F59E0B'},yanchor:'top'}]}),pCfg);
+const jm=[15,46,74,105,135,166,196,227,258,288,319,349],jp=[31,28,31,30,31,30,31,31,30,31,30,31],fm=[.30,.35,.42,.48,.52,.55,.55,.52,.48,.38,.30,.25];
+const Ea=[];for(const t of tilts){let tot=0;for(let m=0;m<12;m++){const{powers}=pvPow(hrs,jm[m],lat,alt,t,Pn,eta);tot+=trapz(hrs,powers)*fm[m]*jp[m]}Ea.push(tot/1000)}
+const mx=Math.max(...Ea),io=Ea.indexOf(mx),i37=tilts.indexOf(36),E37=Ea[i37]||Ea[Math.round(37/2)];
+Plotly.newPlot('ch-tilt-annual',[{x:tilts,y:Ea,line:{color:'#3B82F6',width:3}},{x:[tilts[io]],y:[mx],mode:'markers+text',marker:{size:14,color:'#EF4444',symbol:'star'},text:[`Opt: ${tilts[io]}° → ${mx.toFixed(0)} kWh`],textposition:'bottom right',name:'Optimum'},{x:[37],y:[E37],mode:'markers+text',marker:{size:12,color:'#00D4A0',symbol:'square'},text:[`E-Bench: ${E37.toFixed(0)} kWh`],textposition:'top left',name:'Choix'}],plotLayout({title:'Production annuelle vs Inclinaison',xaxis:{title:'Inclinaison (°)',range:[0,90]},yaxis:{title:'kWh/an'}}),pCfg);
+const perte=((1-E37/mx)*100);
+document.getElementById('sum-4').innerHTML=sumBox('Optimum',tilts[io],'°','green')+sumBox('Prod. optimale',mx.toFixed(0),'kWh/an','green')+sumBox('Choix E-Bench','37','°','')+sumBox('Écart',perte.toFixed(1),'%',perte>5?'orange':'green');
+}
+
+/* ═══════════════ SCRIPT 06: COURBE I-V ═══════════════ */
+function render06(){
+const Isc=13.89,Voc=41.3,Impp=13.13,Vmpp=38.1,Pmpp=500;
+const Vt=.026*72,n=(Vmpp-Voc)/(Vt*Math.log(1-Impp/Isc));
+const Vr=linspace(0,Voc*1.05,400),irr=[1000,800,600,400,200],cl=['#EF4444','#F59E0B','#00D4A0','#3B82F6','#A855F7'];
+const tIV=irr.map((G,g)=>{const Is=Isc*G/1000,Vo=Math.max(0,Voc+n*Vt*Math.log(G/1000));return{x:Vr,y:Vr.map(v=>v>Vo?0:Math.max(0,Is*(1-Math.exp((v-Vo)/(n*Vt))))),name:G+' W/m²',line:{color:cl[g],width:2}}});
+Plotly.newPlot('ch-iv',tIV,plotLayout({title:'Caractéristique I-V — TrinaSolar 500W',xaxis:{title:'Tension (V)',range:[0,45]},yaxis:{title:'Courant (A)',range:[0,16]}}),pCfg);
+const tPV=irr.map((G,g)=>{const Is=Isc*G/1000,Vo=Math.max(0,Voc+n*Vt*Math.log(G/1000));return{x:Vr,y:Vr.map(v=>{if(v>Vo)return 0;const I=Math.max(0,Is*(1-Math.exp((v-Vo)/(n*Vt))));return v*I}),name:G+' W/m²',line:{color:cl[g],width:2}}});
+Plotly.newPlot('ch-pv',tPV,plotLayout({title:'Caractéristique P-V',xaxis:{title:'Tension (V)',range:[0,45]},yaxis:{title:'Puissance (W)'}}),pCfg);
+const lat=50,alt=.05,tilt=37,day=172,dt=.2,hrs=[];for(let h=0;h<=24;h+=dt)hrs.push(h);
+const{irrs}=pvPow(hrs,day,lat,alt,tilt,500,.95);
+const Vb=14.4,Pm=[],Pw=[];
+for(const G of irrs){if(G<10){Pm.push(0);Pw.push(0);continue}const Is=Isc*G/1000,Vo=Math.max(0,Voc+n*Vt*Math.log(Math.max(.001,G/1000)));const Vt2=linspace(0,Vo,200);let mx=0;for(const v of Vt2){mx=Math.max(mx,v*Math.max(0,Is*(1-Math.exp((v-Vo)/(n*Vt)))))}Pm.push(mx*.95);const Ip=Math.max(0,Is*(1-Math.exp((Vb-Vo)/(n*Vt))));Pw.push(Vb*Ip*.90)}
+const Em=trapz(hrs,Pm),Ew=trapz(hrs,Pw),gain=((Em-Ew)/Ew*100);
+Plotly.newPlot('ch-mppt-pwm',[{x:hrs,y:Pm,name:'MPPT (Victron)',line:{color:'#00D4A0',width:2.5}},{x:hrs,y:Pw,name:'PWM classique',line:{color:'#EF4444',dash:'dash',width:2}}],plotLayout({title:`MPPT vs PWM — Gain: +${gain.toFixed(0)}% (+${(Em-Ew).toFixed(0)} Wh)`,xaxis:{title:'Heure',range:[4,22]},yaxis:{title:'Puissance (W)'}}),pCfg);
+document.getElementById('sum-5').innerHTML=sumBox('Pmpp',Pmpp,'W','green')+sumBox('Vmpp / Impp',Vmpp+'V / '+Impp+'A','','')+sumBox('MPPT (été)',(Em/1000).toFixed(2),'kWh','green')+sumBox('Gain MPPT','+'+gain.toFixed(0),'%','green');
+}
+
+/* ═══════════════ SCRIPT 07: SIMULATION 7 JOURS ═══════════════ */
+function render07(){
+const lat=50,alt=.05,tilt=37,Pn=500,eta=.95;
+const Cb=100,Vb=12,Ebat=Cb*Vb,ec=.85,ed=.85,Smin=20,Smax=100,Pcm=Cb/5*Vb;
+const mf=[.85,.90,.60,.25,.15,.50,.95],mN=['Lun (Beau)','Mar (Beau)','Mer (Voilé)','Jeu (Couvert)','Ven (Pluie)','Sam (Variable)','Dim (Beau)'];
+const dS=170,dtH=.2,hD=[];for(let h=0;h<=24;h+=dtH)hD.push(h);const Nd=hD.length;
+const tA=[],pvA=[],ldA=[],scA=[];let SC=80;
+const Epd=[],Ecd=[],Sf=[];
+for(let d=0;d<7;d++){
+const sD=dS+d,mff=mf[d];
+const{powers}=pvPow(hD,sD,lat,alt,tilt,Pn,eta,mff);
+if(mff<.7)for(let i=0;i<powers.length;i++){powers[i]=Math.max(0,powers[i]*(1+.15*Math.sin(d*42+i*.3)*Math.cos(d*84+i*.17)))}
+const ld=hD.map(h=>{if(h<6)return 4;if(h<8)return 8;if(h<12)return 12;if(h<14)return 18;if(h<18)return 12;if(h<22)return 25;return 4});
+const sd=[SC];for(let i=1;i<Nd;i++){const ep=powers[i-1]*dtH,el=ld[i-1]*dtH;let ns;if(ep>=el){let tb=(ep-el)*ec;tb=Math.min(tb,Pcm*dtH);ns=Math.min(Smax,sd[i-1]+tb/Ebat*100)}else{ns=Math.max(Smin,sd[i-1]-(el-ep)/ed/Ebat*100)}sd.push(ns)}
+SC=sd[sd.length-1];
+const tO=d*24;for(let i=0;i<Nd;i++){tA.push(tO+hD[i]);pvA.push(powers[i]);ldA.push(ld[i]);scA.push(sd[i])}
+Epd.push(trapz(hD,powers));Ecd.push(trapz(hD,ld));Sf.push(SC)}
+const td=tA.map(t=>t/24);
+Plotly.newPlot('ch-sim-power',[{x:td,y:pvA,name:'Production PV',fill:'tozeroy',fillcolor:'rgba(0,212,160,.2)',line:{color:'#00D4A0',width:1.5}},{x:td,y:ldA,name:'Consommation',line:{color:'#EF4444',width:2}}],plotLayout({title:'Production vs Consommation — Semaine de juin',xaxis:{title:'Jour',range:[0,7],tickvals:[.5,1.5,2.5,3.5,4.5,5.5,6.5],ticktext:mN.map(n=>n.split(' ')[0])},yaxis:{title:'Puissance (W)'}}),pCfg);
+Plotly.newPlot('ch-sim-soc',[{x:td,y:scA,line:{color:'#3B82F6',width:2.5}}],plotLayout({title:'État de charge batterie',xaxis:{title:'Jour',range:[0,7],tickvals:[.5,1.5,2.5,3.5,4.5,5.5,6.5],ticktext:mN.map(n=>n.split(' ')[0])},yaxis:{title:'SOC (%)',range:[0,105]},shapes:[{type:'line',y0:50,y1:50,x0:0,x1:7,line:{color:'#F59E0B',dash:'dash'}},{type:'line',y0:20,y1:20,x0:0,x1:7,line:{color:'#EF4444'}}]}),pCfg);
+const jrs=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+Plotly.newPlot('ch-sim-daily',[{x:jrs,y:Epd.map(e=>e/1000),name:'Production',type:'bar',marker:{color:'#00D4A0'}},{x:jrs,y:Ecd.map(e=>e/1000),name:'Consommation',type:'bar',marker:{color:'#EF4444'}}],plotLayout({barmode:'group',title:'Bilan journalier',yaxis:{title:'kWh'}}),pCfg);
+let html='<table class="data-table"><thead><tr><th>Jour</th><th>Météo</th><th>Prod</th><th>Conso</th><th>Bilan</th><th>SOC fin</th></tr></thead><tbody>';
+const mt=['85%','90%','60%','25%','15%','50%','95%'];
+for(let d=0;d<7;d++){const b=Epd[d]-Ecd[d];html+=`<tr><td>${mN[d]}</td><td>${mt[d]}</td><td>${Epd[d].toFixed(0)} Wh</td><td>${Ecd[d].toFixed(0)} Wh</td><td class="${b>=0?'positive':'negative'}">${b>=0?'+':''}${b.toFixed(0)}</td><td>${Sf[d].toFixed(1)}%</td></tr>`}
+html+='</tbody></table>';document.getElementById('sim-table').innerHTML=html;
+const tp=Epd.reduce((a,b)=>a+b,0),tc=Ecd.reduce((a,b)=>a+b,0);
+document.getElementById('sum-6').innerHTML=sumBox('Prod. semaine',(tp/1000).toFixed(1),'kWh','green')+sumBox('Conso. semaine',(tc/1000).toFixed(1),'kWh','orange')+sumBox('SOC minimum',Math.min(...scA).toFixed(1),'%',Math.min(...scA)<30?'red':'orange')+sumBox('Bilan',((tp-tc)/1000>=0?'+':'')+((tp-tc)/1000).toFixed(1),'kWh',tp>=tc?'green':'red');
+}
+
+/* ═══════════════ INIT ═══════════════ */
+const renderers=[render01,render02,render03,render04,render05,render06,render07];
+window.addEventListener('load',()=>{render01();rendered[0]=true});
+})();
+</script>
+</body>
+</html>
