@@ -406,11 +406,18 @@ a:hover { color: var(--primary-hover); }
 .team-member h4 {
   font-family: 'Bebas Neue', cursive;
   font-size: 1.3rem;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: var(--text);
 }
 
-.team-member p {
+.team-member .member-name {
+  font-size: 0.95rem;
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.team-member p:not(.member-name) {
   font-size: 0.85rem;
 }
 
