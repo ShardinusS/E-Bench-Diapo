@@ -26,11 +26,11 @@ const slides = [
     icon: 'fa-users',
     title: 'Notre équipe',
     members: [
-      { icon: 'fa-cog', role: 'Mécanique', desc: 'Conception SolidWorks' },
-      { icon: 'fa-bolt', role: 'Électrique', desc: 'Système d\'alimentation' },
-      { icon: 'fa-code', role: 'Informatique', desc: 'Développement logiciel' },
-      { icon: 'fa-chart-line', role: 'Énergétique', desc: 'Étude MATLAB' },
-      { icon: 'fa-project-diagram', role: 'Chef de projet', desc: 'Coordination globale' }
+      { icon: 'fa-cog', role: 'Mécanique', name: 'Membre 1', desc: 'Conception SolidWorks' },
+      { icon: 'fa-bolt', role: 'Électrique', name: 'Membre 2', desc: 'Système d\'alimentation' },
+      { icon: 'fa-code', role: 'Informatique', name: 'Membre 3', desc: 'Développement logiciel' },
+      { icon: 'fa-chart-line', role: 'Énergétique', name: 'Membre 4', desc: 'Étude MATLAB' },
+      { icon: 'fa-project-diagram', role: 'Chef de projet', name: 'Membre 5', desc: 'Coordination globale' }
     ],
     type: 'team'
   },
@@ -229,6 +229,7 @@ function renderSlide(slide) {
               <div class="team-member">
                 <i class="fas ${member.icon}"></i>
                 <h4>${member.role}</h4>
+                <p class="member-name">${member.name}</p>
                 <p>${member.desc}</p>
               </div>
             `).join('')}
