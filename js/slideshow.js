@@ -460,6 +460,12 @@ function goToSlide(index) {
   dotElements[currentSlide].classList.add('active');
   
   updateCounter();
+  
+  // Render chart if current slide has a chart
+  const currentSlideData = slides[currentSlide];
+  if (currentSlideData.chartId && currentSlideData.type === 'chart') {
+    setTimeout(() => renderMatlabChart(currentSlideData.chartId), 100);
+  }
 }
 
 function nextSlide() {
@@ -583,13 +589,10 @@ document.addEventListener('mousemove', () => {
   }, 3000);
 });
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', initSlideshow);
-
 // ═══════════════ MATLAB CHART RENDERER ═══════════════
-(function renderMatlabChart(){
-  const chartEl=document.getElementById('matlab-chart');
-  if(!chartEl)return;
+function renderMatlabChart(chartId = 'matlab-chart'){
+  const chartEl = document.getElementById(chartId);
+  if(!chartEl) return;
   
   // Data from MATLAB analysis (04-ebench-matlab-analysis.html)
   const MO=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
@@ -652,5 +655,12 @@ document.addEventListener('DOMContentLoaded', initSlideshow);
   };
   
   const config={responsive:true,displayModeBar:false,scrollZoom:false};
-  Plotly.newPlot('matlab-chart',[traceProd,traceCons],layout,config);
-})();
+  Plotly.newPlot(chartId,[traceProd,traceCons],layout,config);
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+  initSlideshow();
+  // Render chart on first slide if needed
+  setTimeout(() => renderMatlabChart(), 500);
+});
