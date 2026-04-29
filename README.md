@@ -60,10 +60,25 @@ Banc public connecté et autonome - Présentation interactive du projet E-Bench 
 ## 📊 Données du graphique MATLAB
 
 Le graphique de la slide 8 recrée les données de l'analyse MATLAB originale :
-- **Production solaire** : Calculée selon modèle PV avec panneau 500W, rendement 85%, inclinaison 37°
-- **Consommation** : Basée sur consommation moyenne ~13-15W avec facteurs mensuels
-- **Mois** : Janvier à Décembre avec jours équivalents par mois
-- **Unités** : Énergie en kWh (division par 1000 des Wh calculés)
+
+**Consommation :**
+- **Au plus BAS** : Janvier (~0,35 kWh/jour) et Décembre (~0,38 kWh/jour) - période hivernale
+- **Au plus HAUT** : Juillet (~0,58 kWh/jour) - période estivale
+- La consommation varie selon les mois en fonction de l'ensoleillement (coefficient `fm`)
+- Moyenne annuelle : ~13-15 W continus
+
+**Production solaire :**
+- Calculée selon modèle PV avec panneau 500W monocristallin
+- Rendement global : 85% (eta)
+- Inclinaison : 37° (optimisée pour latitude 50°)
+- Production maximale : Mai-Juillet (journées longues, fort ensoleillement)
+- Production minimale : Novembre-Janvier (journées courtes)
+
+**Bilan énergétique :**
+- Le système produit plus qu'il ne consomme toute l'année
+- Excédent énergétique important en été
+- Autonomie hivernale validée : 3-5 jours sans soleil
+- Batterie 100Ah GEL 12V pour le stockage
 
 ## 👥 Équipe projet
 
