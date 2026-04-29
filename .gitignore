@@ -1,1 +1,1 @@
-(js/slideshow.js)
+Nothing needs to be added to .gitignore since the changes only include documentation and README files (no build artifacts, dependencies, or temporary files).
