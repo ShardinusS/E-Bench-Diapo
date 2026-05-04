@@ -245,6 +245,24 @@ body::before {
   box-shadow: var(--shadow-lg), var(--glow-hover);
 }
 
+/* Card image container for bench photos */
+.card-image-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .card-icon {
   font-size: 18px; margin-bottom: 12px;
   color: var(--primary); width: 44px; height: 44px;
