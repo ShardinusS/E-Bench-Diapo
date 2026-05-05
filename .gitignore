@@ -1,3 +1,42 @@
-(css/style.css, index.html) are source code files, and there are no build artifacts, dependencies, or temporary files in the changes.
+```
+# Dependencies
+node_modules/
 
-Output: (nothing)
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+*.coverage
+
+# IDE specific
+*.swp
+*.swo
+```

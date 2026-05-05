@@ -148,7 +148,7 @@ function initCharts() {
   });
 }
 
-// ═══ 3D BENCH (Three.js) ═══
+// ═══ 3D BENCH (Three.js - GLTF Loader) ═══
 let threeInit = false;
 function init3D() {
   if (threeInit) return;
@@ -174,6 +174,43 @@ function init3D() {
   gLight.position.set(-2, 2, -2);
   scene.add(gLight);
 
+  // Load GLTF model
+  const loader = new THREE.GLTFLoader();
+  let benchModel = null;
+  
+  loader.load(
+    'Banc_3D.gltf',
+    function(gltf) {
+      benchModel = gltf.scene;
+      benchModel.scale.set(0.01, 0.01, 0.01);
+      benchModel.position.set(0, 0, 0);
+      benchModel.rotation.y = Math.PI / 4;
+      scene.add(benchModel);
+    },
+    undefined,
+    function(error) {
+      console.error('Erreur chargement GLTF:', error);
+      // Fallback to procedural bench if GLTF fails
+      createProceduralBench(scene);
+    }
+  );
+
+  // Orbit controls
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.0;
+
+  function render() {
+    requestAnimationFrame(render);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  render();
+}
+
+function createProceduralBench(scene) {
   const mat = c => new THREE.MeshPhongMaterial({ color: c, shininess: 40 });
 
   // Bench legs
@@ -232,32 +269,6 @@ function init3D() {
   const usb = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.02), mat(0x334466));
   usb.position.set(0.55, 0.45, -0.28);
   scene.add(usb);
-
-  // Orbit controls (manual)
-  let isDragging = false, prevX = 0, prevY = 0;
-  let rotY = 0, rotX = 0.2;
-  const group = new THREE.Group();
-  scene.children.slice(2).forEach(c => group.add(c));
-  scene.add(group);
-
-  canvas.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
-  window.addEventListener('mouseup', () => isDragging = false);
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    rotY += (e.clientX - prevX) * 0.01;
-    rotX += (e.clientY - prevY) * 0.005;
-    rotX = Math.max(-0.5, Math.min(0.8, rotX));
-    prevX = e.clientX; prevY = e.clientY;
-  });
-
-  function render() {
-    requestAnimationFrame(render);
-    if (!isDragging) rotY += 0.004;
-    group.rotation.y = rotY;
-    group.rotation.x = rotX;
-    renderer.render(scene, camera);
-  }
-  render();
 }
 
 // ═══ SLIDE ENTER HOOK ═══
@@ -342,7 +353,7 @@ function bindBudgetActions() {
   const input = document.getElementById('input-excel');
   const downloadLink = document.getElementById('budget-download-link');
 
-  if (toggleBtn && input && toggleBtn.tagName === 'BUTTON') {
+  if (toggleBtn && input) {
     toggleBtn.addEventListener('click', () => {
       const wrap = document.getElementById('budget-viewer-wrap');
       if (wrap && wrap.style.display === 'none') {
