@@ -262,9 +262,121 @@ function init3D() {
 
 // ═══ SLIDE ENTER HOOK ═══
 function onSlideEnter(idx) {
-  if (idx === 15) initCharts();
-  if (idx === 8) init3D();
+  const activeSlideId = slides[idx]?.id;
+  if (activeSlideId === 'slide-16') initCharts();
+  if (activeSlideId === 'slide-9') init3D();
 }
 // Init if starting on those slides
 onSlideEnter(0);
 updateUI();
+
+// ═══ EXCEL VIEWER (Slide 4) ═══
+let budgetViewerVisible = false;
+let budgetInputBound = false;
+
+function setBudgetMessage(msg, isError = false) {
+  const msgEl = document.getElementById('budget-viewer-msg');
+  if (!msgEl) return;
+  msgEl.textContent = msg;
+  msgEl.style.color = isError ? '#f87171' : '';
+}
+
+function bindBudgetInput() {
+  if (budgetInputBound) return;
+  const input = document.getElementById('input-excel');
+  if (!input) return;
+  input.addEventListener('change', function(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[firstSheetName];
+        const html = XLSX.utils.sheet_to_html(sheet);
+        const tableContainer = document.getElementById('table-container');
+        if (!tableContainer) {
+          setBudgetMessage("Conteneur d'affichage introuvable.", true);
+          return;
+        }
+        tableContainer.innerHTML = html;
+
+        const tabs = document.getElementById('budget-sheet-tabs');
+        if (tabs) {
+          tabs.innerHTML = '';
+          workbook.SheetNames.forEach((name) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = name;
+            btn.style.cssText = 'padding:6px 10px;border-radius:999px;border:1px solid rgba(0,212,160,0.2);background:rgba(0,212,160,0.08);color:#00D4A0;font-size:12px;cursor:pointer;';
+            btn.onclick = () => {
+              const selectedSheet = workbook.Sheets[name];
+              tableContainer.innerHTML = XLSX.utils.sheet_to_html(selectedSheet);
+              setBudgetMessage(`Feuille active: ${name}`);
+            };
+            tabs.appendChild(btn);
+          });
+        }
+
+        setBudgetMessage(`Fichier chargé: ${file.name}`);
+        const wrap = document.getElementById('budget-viewer-wrap');
+        if (wrap) wrap.style.display = 'block';
+        budgetViewerVisible = true;
+        const toggleBtn = document.getElementById('budget-viewer-toggle');
+        if (toggleBtn) {
+          toggleBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Masquer le budget';
+        }
+      } catch (err) {
+        setBudgetMessage("Erreur de lecture Excel. Vérifie le format (.xlsx/.xls).", true);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+  budgetInputBound = true;
+}
+
+function bindBudgetActions() {
+  const toggleBtn = document.getElementById('budget-viewer-toggle');
+  const input = document.getElementById('input-excel');
+  const downloadLink = document.getElementById('budget-download-link');
+
+  if (toggleBtn && input && toggleBtn.tagName === 'BUTTON') {
+    toggleBtn.addEventListener('click', () => {
+      const wrap = document.getElementById('budget-viewer-wrap');
+      if (wrap && wrap.style.display === 'none') {
+        budgetViewerVisible = true;
+        wrap.style.display = 'block';
+      }
+      // The "Afficher" action now directly opens the Excel picker.
+      input.click();
+    });
+  }
+
+  if (downloadLink) {
+    downloadLink.addEventListener('click', () => {
+      setBudgetMessage("Si rien ne s'ouvre, vérifie l'extension réelle du fichier (ex: Budget_Projet.xlsx) et son emplacement à la racine.");
+    });
+  }
+}
+
+async function toggleBudgetViewer() {
+  const wrap = document.getElementById('budget-viewer-wrap');
+  const toggleBtn = document.getElementById('budget-viewer-toggle');
+  if (!wrap || !toggleBtn) return;
+  budgetViewerVisible = !budgetViewerVisible;
+  wrap.style.display = budgetViewerVisible ? 'block' : 'none';
+  toggleBtn.innerHTML = budgetViewerVisible
+    ? '<i class="fa-solid fa-eye-slash"></i> Masquer le budget'
+    : '<i class="fa-solid fa-table"></i> Importer et afficher Excel';
+  bindBudgetInput();
+  const tableContainer = document.getElementById('table-container');
+  const hasLoadedSheet = !!(tableContainer && tableContainer.innerHTML.trim());
+  if (budgetViewerVisible && !hasLoadedSheet) {
+    setBudgetMessage("Importe un fichier Excel pour l'afficher ici.");
+  }
+}
+
+bindBudgetInput();
+bindBudgetActions();

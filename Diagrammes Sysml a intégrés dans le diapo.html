@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SysML — E-Bench 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+/* Fallback FontAwesome : si le CDN échoue, on affiche un carré coloré visible */
+.fa-solid, .fa-regular, .fa-brands { display: inline-block; font-style: normal; }
+</style>
+<style>
+/* ═══════════════════════════════════════════════════
+   E-BENCH SYSML — Theme matching shardinuss.github.io
+   ═══════════════════════════════════════════════════ */
+
+/* VARIABLES — dark theme (same as site) */
+:root {
+  --bg:         #080C14;
+  --bg-2:       #0D1220;
+  --bg-card:    #111827;
+  --bg-elevated:#1a2235;
+
+  --text:       #F0F4FF;
+  --text-sub:   #8899B4;
+  --text-muted: #6B7A94;
+
+  --primary:        #00D4A0;
+  --primary-hover:  #00E5B0;
+  --blue:           #3B82F6;
+  --amber:          #F59E0B;
+  --red:            #EF4444;
+  --purple:         #A78BFA;
+
+  --border:         rgba(255,255,255,0.08);
+  --border-glow:    rgba(0,212,160,0.35);
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.3);
+  --shadow:     0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg:  0 12px 48px rgba(0,0,0,0.5);
+  --glow:       0 0 40px rgba(0,212,160,0.12);
+
+  --primary-04: rgba(0,212,160,0.04);
+  --primary-06: rgba(0,212,160,0.06);
+  --primary-08: rgba(0,212,160,0.08);
+  --primary-10: rgba(0,212,160,0.10);
+  --primary-12: rgba(0,212,160,0.12);
+  --primary-15: rgba(0,212,160,0.15);
+  --primary-20: rgba(0,212,160,0.20);
+  --primary-25: rgba(0,212,160,0.25);
+  --primary-30: rgba(0,212,160,0.30);
+  --primary-35: rgba(0,212,160,0.35);
+
+  --radius:     12px;
+}
+
+/* RESET */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Noise texture like the real site */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--primary-hover); }
+
+/* ── TYPOGRAPHY ── */
+h1, h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  line-height: 1.05;
+  color: var(--text);
+}
+h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 1rem 0 0.4rem;
+}
+p { margin-bottom: 0.85rem; color: var(--text-sub); line-height: 1.7; }
+ul, ol { margin: 0.5rem 0 1rem 1.4rem; }
+li { margin-bottom: 0.3rem; color: var(--text-sub); }
+strong { font-weight: 600; color: var(--text); }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82em;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--primary);
+  padding: 0.1em 0.45em;
+  border-radius: 5px;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem 2.2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Orb glow — exactly like the site */
+header::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: var(--primary);
+  top: -200px; right: -150px;
+  filter: blur(100px);
+  opacity: 0.08;
+  pointer-events: none;
+}
+header::after {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: var(--blue);
+  bottom: -100px; left: -80px;
+  filter: blur(80px);
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.header-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+.header-badges { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  background: var(--primary-08);
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--primary-15);
+  font-family: 'Space Grotesk', sans-serif;
+}
+.header-badge.gold {
+  color: var(--amber);
+  background: rgba(245,158,11,0.08);
+  border-color: rgba(245,158,11,0.2);
+}
+
+header h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+header h1 span { color: var(--primary); }
+header p { font-size: 1rem; color: var(--text-sub); max-width: 580px; margin-bottom: 0; }
+
+.header-meta { display: flex; gap: 2.5rem; margin-top: 1.8rem; flex-wrap: wrap; }
+.header-stat { text-align: center; }
+.header-stat .val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  display: block;
+  line-height: 1;
+}
+.header-stat .lbl {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+  display: block;
+}
+
+/* ── TABS / NAV ── */
+.tabs-wrapper {
+  background: rgba(8,12,20,0.92);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.tabs-scroll {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  display: flex;
+  gap: 0;
+  padding: 0 24px;
+}
+.tabs-scroll::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 1rem 1.1rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-sub);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tab-btn:hover {
+  color: var(--text);
+  background: var(--primary-04);
+}
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: var(--primary-06);
+}
+.tab-btn .tab-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.tab-btn.active .tab-num {
+  background: var(--primary);
+  color: #000;
+}
+
+/* ── CONTENT ── */
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.4rem 24px 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.tab-panel { display: none; animation: fadeIn 0.3s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECTION TITLE ── */
+h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--text);
+  margin-bottom: 1.4rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 1.4rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow), var(--glow);
+  border-color: var(--border-glow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.card-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.card-icon i { font-size: 1rem; }
+.card-icon.green  { background: rgba(0,212,160,0.10);  border: 1px solid rgba(0,212,160,0.2);  color: #00D4A0; }
+.card-icon.orange { background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.2); color: #F59E0B; }
+.card-icon.blue   { background: rgba(59,130,246,0.10); border: 1px solid rgba(59,130,246,0.2); color: #3B82F6; }
+.card-icon.red    { background: rgba(239,68,68,0.10);  border: 1px solid rgba(239,68,68,0.2);  color: #EF4444; }
+.card-icon.purple { background: rgba(167,139,250,0.10);border: 1px solid rgba(167,139,250,0.2);color: #A78BFA; }
+.card-icon.solar  { background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.2); color: #F59E0B; }
+
+/* ── KEY CONCEPT ── */
+.key-concept {
+  background: var(--primary-06);
+  border: 1px solid var(--primary-15);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 12px 12px 0;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+.key-concept-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.key-concept-title i { font-size: 0.75rem; }
+
+/* ── INFO BOX ── */
+.info-box {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 12px 12px 0;
+  padding: 0.9rem 1.2rem;
+  margin: 1rem 0;
+  font-size: 0.92rem;
+  color: var(--text-sub);
+}
+
+/* ── DIAGRAMS ── */
+.diagram-container {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.2rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+.diagram-container svg {
+  overflow: visible;
+}
+.diagram-caption {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 0.9rem;
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+}
+svg text { font-family: 'Space Grotesk', sans-serif; }
+svg .mono { font-family: 'JetBrains Mono', monospace; }
+
+/* SVG dark mode — replace white fills */
+.diagram-container svg [fill="white"]   { fill: #1a2235 !important; }
+.diagram-container svg [fill="#FAFAF8"] { fill: #111827 !important; }
+.diagram-container svg [fill="#DBEAFE"] { fill: #0f1e35 !important; }
+.diagram-container svg [fill="#EDE9FE"] { fill: #1a1535 !important; }
+.diagram-container svg [fill="#FEF0DC"] { fill: #251a0a !important; }
+.diagram-container svg [fill="#E5F2EC"] { fill: #0a1f18 !important; }
+.diagram-container svg [fill="#FEE2E2"] { fill: #250a0a !important; }
+.diagram-container svg [fill="#BFDBFE"] { fill: #0f1e35 !important; }
+
+/* ── TABLES ── */
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif; }
+th {
+  background: var(--bg-elevated);
+  color: var(--primary);
+  padding: 0.7rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border-glow);
+}
+th:first-child { border-radius: 10px 0 0 0; }
+th:last-child  { border-radius: 0 10px 0 0; }
+td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text-sub);
+}
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+tr:hover td { background: var(--primary-04); color: var(--text); }
+
+/* ── INTRO GRID ── */
+.intro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.2rem 0;
+}
+.intro-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.intro-item:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+}
+.intro-item-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,212,160,0.08);
+  border: 1px solid rgba(0,212,160,0.15);
+  color: #00D4A0;
+}
+.intro-item-text h4 { margin: 0 0 0.25rem; }
+.intro-item-text p  { margin: 0; font-size: 0.83rem; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  text-align: center;
+  padding: 1.8rem 1.5rem;
+  font-size: 0.84rem;
+  font-family: 'Space Grotesk', sans-serif;
+}
+footer strong { color: var(--primary); font-weight: 600; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  header { padding: 2rem 1rem 1.6rem; }
+  header h1 { font-size: 2.2rem; }
+  .header-meta { gap: 1.5rem; }
+  .content-wrapper { padding: 1.5rem 1rem 4rem; }
+  .tab-btn { padding: 0.75rem 0.8rem; font-size: 0.76rem; }
+  .card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-badges">
+      <span class="header-badge">SysML · STI2D</span>
+      <span class="header-badge">Première 2024-2025</span>
+    </div>
+    <h1>E-Bench 2026 — <span>Modélisation SysML</span></h1>
+    <p>Diagrammes SysML complets appliqués au banc public intelligent autonome en énergie solaire.</p>
+    <div class="header-meta">
+      <div class="header-stat"><div class="val">500Wc</div><div class="lbl">Panneau solaire</div></div>
+      <div class="header-stat"><div class="val">100Ah</div><div class="lbl">Batterie GEL</div></div>
+      <div class="header-stat"><div class="val">5+j</div><div class="lbl">Autonomie</div></div>
+      <div class="header-stat"><div class="val">7</div><div class="lbl">Diagrammes</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-wrapper">
+  <div class="tabs-scroll">
+    <button class="tab-btn active" data-tab="intro"><span class="tab-num">1</span>Introduction</button>
+    <button class="tab-btn" data-tab="req"><span class="tab-num">2</span>Exigences</button>
+    <button class="tab-btn" data-tab="uc"><span class="tab-num">3</span>Cas d'utilisation</button>
+    <button class="tab-btn" data-tab="bdd"><span class="tab-num">4</span>Déf. de blocs</button>
+    <button class="tab-btn" data-tab="ibd"><span class="tab-num">5</span>Blocs internes</button>
+    <button class="tab-btn" data-tab="stm"><span class="tab-num">6</span>États</button>
+    <button class="tab-btn" data-tab="sd"><span class="tab-num">7</span>Séquence</button>
+    <button class="tab-btn" data-tab="act"><span class="tab-num">8</span>Activité</button>
+  </div>
+</div>
+
+<div class="content-wrapper">
+
+<div class="tab-panel active" id="panel-intro">
+  <h2>1. Présentation du système E-Bench 2026</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon solar"><i class="fa-solid fa-sun"></i></div>
+      <h3>Qu'est-ce que E-Bench ?</h3>
+    </div>
+    <p>E-Bench est un <strong>banc public intelligent et 100 % autonome en énergie solaire</strong>, conçu par 5 lycéens STI2D des Hauts-de-France. Il intègre des prises de recharge USB-C/USB-A, un capteur PIR de présence, un écran tactile 7" et une gestion énergétique complète.</p>
+
+    <div class="intro-grid">
+      <div class="intro-item">
+        <div class="intro-item-icon"><i class="fa-solid fa-battery-full"></i></div>
+        <div class="intro-item-text">
+          <h4>Énergie</h4>
+          <p>Panneau 500Wc monocristallin, batterie GEL 100Ah 12V, MPPT Victron 150|35 (+30% vs PWM).</p>
+        </div>
+      </div>
+      <div class="intro-item">
+        <div class="intro-item-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="intro-item-text">
+          <h4>Informatique embarquée</h4>
+          <p>Raspberry Pi 3B, Python asyncio, capteur PIR GPIO 17, écran tactile 7" IPS, SQLite local.</p>
+        </div>
+      </div>
+      <div class="intro-item">
+        <div class="intro-item-icon"><i class="fa-solid fa-plug"></i></div>
+        <div class="intro-item-text">
+          <h4>Recharge</h4>
+          <p>2× USB-C (45W) + 2× USB-A (12W). Bridage logiciel sous 20% de batterie.</p>
+        </div>
+      </div>
+      <div class="intro-item">
+        <div class="intro-item-icon"><i class="fa-solid fa-tree"></i></div>
+        <div class="intro-item-text">
+          <h4>Structure</h4>
+          <p>Pin classe 3 (scierie locale), modélisé SolidWorks, résistance validée à 300 kg, boîtier IP65.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon green"><i class="fa-solid fa-ruler-combined"></i></div>
+      <h3>Les 7 diagrammes SysML appliqués à E-Bench</h3>
+    </div>
+    <table>
+      <thead><tr><th>N°</th><th>Diagramme</th><th>Code</th><th>Question clé pour E-Bench</th></tr></thead>
+      <tbody>
+        <tr><td>2</td><td>Exigences</td><td><code>req</code></td><td>Quels sont les besoins du banc ? Autonomie, sécurité, recharge…</td></tr>
+        <tr><td>3</td><td>Cas d'utilisation</td><td><code>uc</code></td><td>Qui utilise le banc ? L'utilisateur, le soleil, le technicien…</td></tr>
+        <tr><td>4</td><td>Définition de blocs</td><td><code>bdd</code></td><td>De quoi est composé le banc ? Panneau, batterie, RPi…</td></tr>
+        <tr><td>5</td><td>Blocs internes</td><td><code>ibd</code></td><td>Comment les composants sont-ils connectés ? Flux énergie/info…</td></tr>
+        <tr><td>6</td><td>États</td><td><code>stm</code></td><td>Comment le banc évolue-t-il ? Veille, actif, mode éco…</td></tr>
+        <tr><td>7</td><td>Séquence</td><td><code>seq</code></td><td>Que se passe-t-il quand un usager s'approche du banc ?</td></tr>
+        <tr><td>8</td><td>Activité</td><td><code>act</code></td><td>Comment fonctionne la boucle principale Python (sensor_manager) ?</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-req">
+  <h2>2. Diagramme d'exigences — E-Bench (req)</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon orange"><i class="fa-solid fa-clipboard-list"></i></div>
+      <h3>Les exigences du banc intelligent</h3>
+    </div>
+    <p>Le diagramme d'exigences formalise les <strong>besoins du projet E-Bench</strong> : autonomie énergétique, recharge USB, détection de présence, résistance aux intempéries, accessibilité PMR…</p>
+    <div class="key-concept">
+      <div class="key-concept-title"><i class="fa-solid fa-key"></i> Exigences principales identifiées</div>
+      <p style="margin:0;">E-Bench doit être <strong>autonome en énergie</strong> (REQ_001), <strong>permettre la recharge USB</strong> (REQ_002), <strong>détecter la présence</strong> d'un usager (REQ_003) et <strong>résister aux intempéries</strong> (REQ_004 — IP65, pin classe 3, norme NF EN 581-3).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon blue"><i class="fa-solid fa-chart-bar"></i></div>
+      <h3>Diagramme d'exigences complet</h3>
+    </div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 800 520" width="100%" style="max-width:790px;">
+        
+        <rect x="270" y="10" width="260" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="2"/>
+        <line x1="270" y1="30" x2="530" y2="30" stroke="#F59E0B" stroke-width="1"/>
+        <text x="280" y="24" font-size="9.5" fill="#F59E0B" font-weight="700">«requirement»</text>
+        <text x="400" y="24" text-anchor="middle" font-size="10" fill="#F59E0B" font-weight="700"></text>
+        <text x="400" y="47" text-anchor="middle" font-size="12" font-weight="700" fill="#C8D8E8">E-Bench 2026</text>
+        <text x="280" y="60" font-size="9" fill="#C8D8E8" font-weight="600">Id : REQ_000</text>
+        <text x="280" y="74" font-size="9" fill="#8899B4">Text : "Banc autonome intelligent en énergie"</text>
+
+        
+        <line x1="400" y1="85" x2="400" y2="120" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="80" y1="120" x2="720" y2="120" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="400,85 406,97 400,109 394,97" fill="#1a2235" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="395" y1="97" x2="405" y2="97" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="400" y1="93" x2="400" y2="101" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <line x1="80" y1="120" x2="80" y2="155" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="240" y1="120" x2="240" y2="155" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="400" y1="120" x2="400" y2="155" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="560" y1="120" x2="560" y2="155" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="720" y1="120" x2="720" y2="155" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <rect x="10" y="155" width="140" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <line x1="10" y1="174" x2="150" y2="174" stroke="#F59E0B" stroke-width="1"/>
+        <text x="18" y="168" font-size="8.5" fill="#F59E0B" font-weight="700">«requirement»</text>
+        <text x="80" y="189" text-anchor="middle" font-size="9.5" font-weight="700" fill="#C8D8E8">REQ_001</text>
+        <text x="80" y="202" text-anchor="middle" font-size="9" font-weight="600" fill="#34D399">Autonomie énergétique</text>
+        <text x="18" y="220" font-size="8.5" fill="#8899B4">≥5 jours (veille)</text>
+
+        
+        <rect x="165" y="155" width="145" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <line x1="165" y1="174" x2="310" y2="174" stroke="#F59E0B" stroke-width="1"/>
+        <text x="173" y="168" font-size="8.5" fill="#F59E0B" font-weight="700">«requirement»</text>
+        <text x="237" y="189" text-anchor="middle" font-size="9.5" font-weight="700" fill="#C8D8E8">REQ_002</text>
+        <text x="237" y="202" text-anchor="middle" font-size="9" font-weight="600" fill="#34D399">Recharge USB</text>
+        <text x="173" y="220" font-size="8.5" fill="#8899B4">USB-C 45W + USB-A 12W</text>
+
+        
+        <rect x="323" y="155" width="155" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <line x1="323" y1="174" x2="478" y2="174" stroke="#F59E0B" stroke-width="1"/>
+        <text x="331" y="168" font-size="8.5" fill="#F59E0B" font-weight="700">«requirement»</text>
+        <text x="400" y="189" text-anchor="middle" font-size="9.5" font-weight="700" fill="#C8D8E8">REQ_003</text>
+        <text x="400" y="202" text-anchor="middle" font-size="9" font-weight="600" fill="#34D399">Détection présence</text>
+        <text x="331" y="220" font-size="8.5" fill="#8899B4">PIR 7m, réveil écran</text>
+
+        
+        <rect x="488" y="155" width="144" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <line x1="488" y1="174" x2="632" y2="174" stroke="#F59E0B" stroke-width="1"/>
+        <text x="496" y="168" font-size="8.5" fill="#F59E0B" font-weight="700">«requirement»</text>
+        <text x="560" y="189" text-anchor="middle" font-size="9.5" font-weight="700" fill="#C8D8E8">REQ_004</text>
+        <text x="560" y="202" text-anchor="middle" font-size="9" font-weight="600" fill="#34D399">Résistance IP65</text>
+        <text x="496" y="220" font-size="8.5" fill="#8899B4">Boîtier élec. + bois cl.3</text>
+
+        
+        <rect x="642" y="155" width="148" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <line x1="642" y1="174" x2="790" y2="174" stroke="#F59E0B" stroke-width="1"/>
+        <text x="650" y="168" font-size="8.5" fill="#F59E0B" font-weight="700">«requirement»</text>
+        <text x="715" y="189" text-anchor="middle" font-size="9.5" font-weight="700" fill="#C8D8E8">REQ_005</text>
+        <text x="715" y="202" text-anchor="middle" font-size="9" font-weight="600" fill="#34D399">Sécurité électrique</text>
+        <text x="650" y="220" font-size="8.5" fill="#8899B4">NF C 15-712-1 · fusibles</text>
+
+        
+        <rect x="10" y="350" width="150" height="50" rx="4" fill="#0a2218" stroke="#34D399" stroke-width="1.5"/>
+        <text x="85" y="370" text-anchor="middle" font-size="10" font-weight="600" fill="#34D399">«block»</text>
+        <text x="85" y="386" text-anchor="middle" font-size="10" fill="#C8D8E8">MPPT Victron</text>
+        <line x1="85" y1="350" x2="80" y2="230" stroke="#34D399" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <polygon points="80,230 75,240 85,240" fill="#34D399"/>
+        <rect x="42" y="280" width="72" height="16" rx="3" fill="#1a2235" stroke="#34D399" stroke-width="1"/>
+        <text x="78" y="291" text-anchor="middle" font-size="8.5" fill="#34D399" font-weight="600">«satisfy»</text>
+
+        
+        <rect x="323" y="350" width="155" height="50" rx="4" fill="#0a2218" stroke="#34D399" stroke-width="1.5"/>
+        <text x="400" y="370" text-anchor="middle" font-size="10" font-weight="600" fill="#34D399">«block»</text>
+        <text x="400" y="386" text-anchor="middle" font-size="10" fill="#C8D8E8">Raspberry Pi 3B + PIR</text>
+        <line x1="400" y1="350" x2="400" y2="230" stroke="#34D399" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <polygon points="400,230 395,240 405,240" fill="#34D399"/>
+        <rect x="358" y="280" width="72" height="16" rx="3" fill="#1a2235" stroke="#34D399" stroke-width="1"/>
+        <text x="394" y="291" text-anchor="middle" font-size="8.5" fill="#34D399" font-weight="600">«satisfy»</text>
+
+        
+        <rect x="560" y="350" width="140" height="50" rx="4" fill="#1e1840" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="630" y="370" text-anchor="middle" font-size="10" font-weight="600" fill="#A78BFA">«testCase»</text>
+        <text x="630" y="386" text-anchor="middle" font-size="9.5" fill="#C8D8E8">Test étanchéité IP65</text>
+        <line x1="620" y1="350" x2="565" y2="230" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <polygon points="565,230 560,240 570,240" fill="#A78BFA"/>
+        <rect x="563" y="278" width="60" height="16" rx="3" fill="#1a2235" stroke="#A78BFA" stroke-width="1"/>
+        <text x="593" y="289" text-anchor="middle" font-size="8.5" fill="#A78BFA" font-weight="600">«verify»</text>
+
+        
+        <text x="10" y="468" font-size="9" fill="#8899B4" font-weight="600">LÉGENDE :</text>
+        <line x1="80" y1="462" x2="110" y2="462" stroke="#34D399" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <text x="115" y="466" font-size="9" fill="#8899B4">«satisfy» — un bloc répond à l'exigence</text>
+        <line x1="310" y1="462" x2="340" y2="462" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <text x="345" y="466" font-size="9" fill="#8899B4">«verify» — un test vérifie l'exigence</text>
+      </svg>
+      <div class="diagram-caption">Fig. 2.1 — Diagramme d'exigences du banc E-Bench 2026</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon orange"><i class="fa-solid fa-clipboard-list"></i></div><h3>Tableau des exigences</h3></div>
+    <table>
+      <thead><tr><th>Id</th><th>Texte</th><th>Criticité</th><th>Norme associée</th></tr></thead>
+      <tbody>
+        <tr><td>REQ_001</td><td>Le banc doit assurer ≥5 jours d'autonomie en veille sans soleil</td><td style="color:#F87171;font-weight:600;">Critique</td><td>NF C 15-712-1</td></tr>
+        <tr><td>REQ_002</td><td>Le banc doit fournir au moins 2 prises USB-C 45W et 2 USB-A 12W</td><td style="color:#F59E0B;font-weight:600;">Élevée</td><td>IEC 62109-1</td></tr>
+        <tr><td>REQ_003</td><td>Le système doit détecter la présence à 7m et réveiller l'écran</td><td style="color:#F59E0B;font-weight:600;">Élevée</td><td>—</td></tr>
+        <tr><td>REQ_004</td><td>Le boîtier électronique doit être étanche IP65 (poussière + jets d'eau)</td><td style="color:#F87171;font-weight:600;">Critique</td><td>IEC 60529</td></tr>
+        <tr><td>REQ_005</td><td>L'installation DC doit respecter NF C 15-712-1 avec fusibles adaptés</td><td style="color:#F87171;font-weight:600;">Critique</td><td>NF C 15-712-1</td></tr>
+        <tr><td>REQ_006</td><td>La structure doit supporter 300 kg et résister au gel (pin classe 3)</td><td style="color:#F87171;font-weight:600;">Critique</td><td>NF EN 581-3</td></tr>
+        <tr><td>REQ_007</td><td>Le système doit activer le mode éco sous 20% de batterie</td><td style="color:#F59E0B;font-weight:600;">Élevée</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-uc">
+  <h2>3. Diagramme de cas d'utilisation — E-Bench (uc)</h2>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon green"><i class="fa-solid fa-user"></i></div><h3>Acteurs du système E-Bench</h3></div>
+    <p>Le banc interagit avec plusieurs acteurs : l'<strong>usager</strong> (personne qui s'assoit), le <strong>technicien</strong> (maintenance), le <strong>panneau solaire</strong> (source d'énergie, acteur système) et le <strong>capteur PIR</strong> (déclencheur interne).</p>
+    <div class="key-concept">
+      <div class="key-concept-title"><i class="fa-solid fa-key"></i> Rappel</div>
+      <p style="margin:0;">Un acteur peut être une <strong>personne</strong> (usager, technicien) mais aussi un <strong>système externe</strong> (panneau solaire, réseau électrique) ou un <strong>capteur</strong> (PIR HC-SR501).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon blue"><i class="fa-solid fa-sun"></i></div><h3>Diagramme de cas d'utilisation</h3></div>
+    <div class="diagram-container">
+      <!-- UC diagram — viewBox élargi pour les acteurs externes à droite -->
+      <svg viewBox="0 0 820 430" width="100%" style="max-width:820px;">
+
+        <!-- ── Système (rectangle) ── -->
+        <rect x="155" y="10" width="430" height="410" rx="8" fill="#111827" stroke="#5B8DB8" stroke-width="2"/>
+        <text x="370" y="38" text-anchor="middle" font-size="13" font-weight="700" fill="#C8D8E8">Banc Intelligent E-Bench 2026</text>
+
+        <!-- ── Cas d'utilisation — espacés de 70px, centrés à x=370 ── -->
+        <ellipse cx="370" cy="80"  rx="135" ry="24" fill="#0D2847" stroke="#34D399" stroke-width="1.5"/>
+        <text x="370" y="85"  text-anchor="middle" font-size="10.5" fill="#34D399" font-weight="600">Recharger un appareil USB</text>
+
+        <ellipse cx="370" cy="150" rx="135" ry="24" fill="#0D2847" stroke="#34D399" stroke-width="1.5"/>
+        <text x="370" y="155" text-anchor="middle" font-size="10.5" fill="#34D399" font-weight="600">Consulter l'interface tactile</text>
+
+        <ellipse cx="370" cy="220" rx="135" ry="24" fill="#0D2847" stroke="#34D399" stroke-width="1.5"/>
+        <text x="370" y="225" text-anchor="middle" font-size="10.5" fill="#34D399" font-weight="600">Activer le mode éco</text>
+
+        <ellipse cx="370" cy="295" rx="135" ry="24" fill="#0D2847" stroke="#34D399" stroke-width="1.5"/>
+        <text x="370" y="300" text-anchor="middle" font-size="10.5" fill="#34D399" font-weight="600">Diagnostiquer le système</text>
+
+        <ellipse cx="370" cy="370" rx="135" ry="24" fill="#0D2847" stroke="#34D399" stroke-width="1.5"/>
+        <text x="370" y="375" text-anchor="middle" font-size="10.5" fill="#34D399" font-weight="600">Produire de l'énergie PV</text>
+
+        <!-- ── Acteur Usager (gauche) ── -->
+        <circle cx="60" cy="100" r="14" fill="none" stroke="#00D4A0" stroke-width="2"/>
+        <line x1="60" y1="114" x2="60" y2="150" stroke="#5B8DB8" stroke-width="2"/>
+        <line x1="36" y1="130" x2="84" y2="130" stroke="#5B8DB8" stroke-width="2"/>
+        <line x1="60" y1="150" x2="40" y2="176" stroke="#5B8DB8" stroke-width="2"/>
+        <line x1="60" y1="150" x2="80" y2="176" stroke="#5B8DB8" stroke-width="2"/>
+        <text x="60" y="194" text-anchor="middle" font-size="11" font-weight="600" fill="#C8D8E8">Usager</text>
+        <!-- Usager → Recharger -->
+        <line x1="84" y1="112" x2="235" y2="82" stroke="#5B8DB8" stroke-width="1.5"/>
+        <!-- Usager → Consulter -->
+        <line x1="84" y1="126" x2="235" y2="152" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        <!-- ── Acteur Technicien (gauche, bas) ── -->
+        <circle cx="60" cy="295" r="14" fill="none" stroke="#00D4A0" stroke-width="2"/>
+        <line x1="60" y1="309" x2="60" y2="345" stroke="#5B8DB8" stroke-width="2"/>
+        <line x1="36" y1="325" x2="84" y2="325" stroke="#5B8DB8" stroke-width="2"/>
+        <line x1="60" y1="345" x2="40" y2="371" stroke="#5B8DB8" stroke-width="2"/>
+        <line x1="60" y1="345" x2="80" y2="371" stroke="#5B8DB8" stroke-width="2"/>
+        <text x="60" y="392" text-anchor="middle" font-size="11" font-weight="600" fill="#C8D8E8">Technicien</text>
+        <!-- Technicien → Diagnostiquer -->
+        <line x1="84" y1="295" x2="235" y2="295" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        <!-- ── Acteur PIR (droite, haut) ── -->
+        <rect x="710" y="128" width="100" height="54" rx="6" fill="#1e1840" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="760" y="147" text-anchor="middle" font-size="9"  fill="#A78BFA" font-weight="700">«capteur»</text>
+        <text x="760" y="161" text-anchor="middle" font-size="10" font-weight="600" fill="#C8D8E8">PIR</text>
+        <text x="760" y="175" text-anchor="middle" font-size="10" font-weight="600" fill="#C8D8E8">HC-SR501</text>
+        <!-- PIR → Activer mode éco  (ligne directe) -->
+        <line x1="710" y1="155" x2="585" y2="220" stroke="#A78BFA" stroke-width="1.5"/>
+
+        <!-- ── Acteur Panneau Solaire (droite, bas) ── -->
+        <rect x="710" y="348" width="100" height="54" rx="6" fill="#2a1e08" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="760" y="367" text-anchor="middle" font-size="9"  fill="#F59E0B" font-weight="700">«système»</text>
+        <text x="760" y="381" text-anchor="middle" font-size="10" font-weight="600" fill="#C8D8E8">Panneau</text>
+        <text x="760" y="395" text-anchor="middle" font-size="10" font-weight="600" fill="#C8D8E8">Solaire 500Wc</text>
+        <!-- Panneau → Produire énergie PV -->
+        <line x1="710" y1="375" x2="585" y2="372" stroke="#F59E0B" stroke-width="1.5"/>
+
+        <!-- ── Relation «include» Recharger → Consulter
+             Tracée sur le côté gauche intérieur, bien dégagée des ellipses ── -->
+        <path d="M235,80 Q190,100 190,150 Q190,170 235,152"
+              fill="none" stroke="#5B8DB8" stroke-width="1.2" stroke-dasharray="5,3"/>
+        <polygon points="235,152 228,144 237,142" fill="#5B8DB8"/>
+        <!-- label sur fond opaque pour lisibilité -->
+        <rect x="155" y="108" width="72" height="16" rx="3" fill="#111827" stroke="#5B8DB8" stroke-width="1"/>
+        <text x="191" y="120" text-anchor="middle" font-size="8.5" fill="#C8D8E8" font-weight="600">«include»</text>
+
+        <!-- ── Relation «extend» PIR → Consulter
+             Tracée en haut à droite, label bien séparé de la ligne PIR→Activer ── -->
+        <path d="M710,140 Q660,120 585,148"
+              fill="none" stroke="#A78BFA" stroke-width="1.2" stroke-dasharray="5,3"/>
+        <polygon points="585,148 592,141 594,151" fill="#A78BFA"/>
+        <rect x="632" y="112" width="62" height="16" rx="3" fill="#111827" stroke="#A78BFA" stroke-width="1"/>
+        <text x="663" y="124" text-anchor="middle" font-size="8.5" fill="#A78BFA" font-weight="600">«extend»</text>
+
+      </svg>
+      <div class="diagram-caption">Fig. 3.1 — Diagramme de cas d'utilisation du banc E-Bench 2026</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-bdd">
+  <h2>4. Diagramme de définition de blocs — E-Bench (bdd)</h2>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon blue"><i class="fa-solid fa-cubes"></i></div><h3>Structure du système E-Bench</h3></div>
+    <p>Le diagramme <code>bdd</code> décrit la <strong>décomposition hiérarchique</strong> du banc en sous-systèmes. E-Bench est composé de 3 sous-systèmes majeurs : <strong>Énergie</strong>, <strong>Informatique embarquée</strong> et <strong>Structure physique</strong>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon green"><i class="fa-solid fa-diagram-project"></i></div><h3>bdd complet du banc E-Bench</h3></div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 800 480" width="100%" style="max-width:790px;">
+        
+        <rect x="275" y="10" width="250" height="65" rx="4" fill="#0D2847" stroke="#60A5FA" stroke-width="2"/>
+        <rect x="275" y="10" width="250" height="28" rx="4" fill="#0D2847" stroke="#60A5FA" stroke-width="2"/>
+        <text x="400" y="28" text-anchor="middle" font-size="10" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="400" y="50" text-anchor="middle" font-size="14" font-weight="700" fill="#C8D8E8">E-Bench 2026</text>
+        <line x1="275" y1="55" x2="525" y2="55" stroke="#60A5FA" stroke-width="0.5"/>
+
+        
+        <line x1="400" y1="75" x2="400" y2="110" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="400,75 406,87 400,99 394,87" fill="#5B8DB8" stroke="#5B8DB8" stroke-width="1"/>
+        <line x1="120" y1="110" x2="680" y2="110" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="120" y1="110" x2="120" y2="145" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="400" y1="110" x2="400" y2="145" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="680" y1="110" x2="680" y2="145" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <text x="108" y="140" font-size="9" font-weight="600" fill="#F59E0B">1</text>
+        <text x="388" y="140" font-size="9" font-weight="600" fill="#F59E0B">1</text>
+        <text x="668" y="140" font-size="9" font-weight="600" fill="#F59E0B">1</text>
+
+        
+        <rect x="30" y="145" width="180" height="70" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <line x1="30" y1="163" x2="210" y2="163" stroke="#60A5FA" stroke-width="1"/>
+        <text x="40" y="157" font-size="9" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="120" y="178" text-anchor="middle" font-size="11" font-weight="700" fill="#C8D8E8">Sous-système Énergie</text>
+        <line x1="30" y1="188" x2="210" y2="188" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="40" y="200" font-size="8.5" fill="#8899B4" class="mono">tension : V = 12</text>
+        <text x="40" y="212" font-size="8.5" fill="#8899B4" class="mono">capacité : Ah = 100</text>
+
+        
+        <rect x="300" y="145" width="200" height="70" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <line x1="300" y1="163" x2="500" y2="163" stroke="#60A5FA" stroke-width="1"/>
+        <text x="310" y="157" font-size="9" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="400" y="178" text-anchor="middle" font-size="11" font-weight="700" fill="#C8D8E8">S.S. Informatique</text>
+        <line x1="300" y1="188" x2="500" y2="188" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="310" y="200" font-size="8.5" fill="#8899B4" class="mono">cpu : RPi 3B</text>
+        <text x="310" y="212" font-size="8.5" fill="#8899B4" class="mono">os : Raspberry Pi OS</text>
+
+        
+        <rect x="580" y="145" width="195" height="70" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <line x1="580" y1="163" x2="775" y2="163" stroke="#60A5FA" stroke-width="1"/>
+        <text x="590" y="157" font-size="9" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="678" y="178" text-anchor="middle" font-size="11" font-weight="700" fill="#C8D8E8">S.S. Structure</text>
+        <line x1="580" y1="188" x2="775" y2="188" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="590" y="200" font-size="8.5" fill="#8899B4" class="mono">matière : pin classe 3</text>
+        <text x="590" y="212" font-size="8.5" fill="#8899B4" class="mono">résistance : kg = 300</text>
+
+        
+        <line x1="120" y1="215" x2="120" y2="250" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="120,215 126,225 120,235 114,225" fill="#5B8DB8" stroke="#5B8DB8" stroke-width="1"/>
+        <line x1="30" y1="250" x2="210" y2="250" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="30" y1="250" x2="30" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="120" y1="250" x2="120" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="210" y1="250" x2="210" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <rect x="-5" y="285" width="75" height="55" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="33" y="302" text-anchor="middle" font-size="8" fill="#F59E0B" font-weight="700">«block»</text>
+        <text x="33" y="316" text-anchor="middle" font-size="9" font-weight="600">Panneau</text>
+        <text x="33" y="329" text-anchor="middle" font-size="9" font-weight="600">500Wc</text>
+        <text x="33" y="334" font-size="7.5" fill="#8899B4" text-anchor="middle">incl. 37°</text>
+
+        
+        <rect x="83" y="285" width="75" height="55" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="121" y="302" text-anchor="middle" font-size="8" fill="#F59E0B" font-weight="700">«block»</text>
+        <text x="121" y="316" text-anchor="middle" font-size="9" font-weight="600">MPPT</text>
+        <text x="121" y="329" text-anchor="middle" font-size="9" font-weight="600">Victron</text>
+        <text x="121" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">150|35</text>
+
+        
+        <rect x="171" y="285" width="75" height="55" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="208" y="302" text-anchor="middle" font-size="8" fill="#F59E0B" font-weight="700">«block»</text>
+        <text x="208" y="316" text-anchor="middle" font-size="9" font-weight="600">Batterie</text>
+        <text x="208" y="329" text-anchor="middle" font-size="9" font-weight="600">GEL 100Ah</text>
+        <text x="208" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">12V</text>
+
+        
+        <line x1="400" y1="215" x2="400" y2="250" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="400,215 406,225 400,235 394,225" fill="#5B8DB8" stroke="#5B8DB8" stroke-width="1"/>
+        <line x1="315" y1="250" x2="490" y2="250" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="315" y1="250" x2="315" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="400" y1="250" x2="400" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="490" y1="250" x2="490" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <rect x="275" y="285" width="80" height="55" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="315" y="302" text-anchor="middle" font-size="8" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="315" y="316" text-anchor="middle" font-size="9" font-weight="600">Raspberry</text>
+        <text x="315" y="329" text-anchor="middle" font-size="9" font-weight="600">Pi 3B</text>
+        <text x="315" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">Python 3.11</text>
+
+        
+        <rect x="360" y="285" width="80" height="55" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="400" y="302" text-anchor="middle" font-size="8" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="400" y="316" text-anchor="middle" font-size="9" font-weight="600">Capteur PIR</text>
+        <text x="400" y="329" text-anchor="middle" font-size="9" font-weight="600">HC-SR501</text>
+        <text x="400" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">GPIO 17</text>
+
+        
+        <rect x="445" y="285" width="80" height="55" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="485" y="302" text-anchor="middle" font-size="8" fill="#60A5FA" font-weight="700">«block»</text>
+        <text x="485" y="316" text-anchor="middle" font-size="9" font-weight="600">Écran 7"</text>
+        <text x="485" y="329" text-anchor="middle" font-size="9" font-weight="600">IPS tactile</text>
+        <text x="485" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">1024×600</text>
+
+        
+        <line x1="678" y1="215" x2="678" y2="250" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="678,215 684,225 678,235 672,225" fill="#5B8DB8" stroke="#5B8DB8" stroke-width="1"/>
+        <line x1="610" y1="250" x2="755" y2="250" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="610" y1="250" x2="610" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="755" y1="250" x2="755" y2="285" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <rect x="567" y="285" width="88" height="55" rx="4" fill="#1a2235" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="611" y="302" text-anchor="middle" font-size="8" fill="#A78BFA" font-weight="700">«block»</text>
+        <text x="611" y="316" text-anchor="middle" font-size="9" font-weight="600">Structure bois</text>
+        <text x="611" y="329" text-anchor="middle" font-size="9" font-weight="600">pin cl.3</text>
+        <text x="611" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">300 kg</text>
+
+        
+        <rect x="661" y="285" width="89" height="55" rx="4" fill="#1a2235" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="706" y="302" text-anchor="middle" font-size="8" fill="#A78BFA" font-weight="700">«block»</text>
+        <text x="706" y="316" text-anchor="middle" font-size="9" font-weight="600">Boîtier élec.</text>
+        <text x="706" y="329" text-anchor="middle" font-size="9" font-weight="600">IP65</text>
+        <text x="706" y="337" text-anchor="middle" font-size="7.5" fill="#8899B4">ventilé passif</text>
+
+        
+        <rect x="295" y="410" width="105" height="50" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="348" y="428" text-anchor="middle" font-size="8" fill="#F59E0B" font-weight="700">«block»</text>
+        <text x="348" y="442" text-anchor="middle" font-size="9" font-weight="600">Convertisseur</text>
+        <text x="348" y="455" text-anchor="middle" font-size="9" font-weight="600">DC-DC 12→5V</text>
+        
+        <line x1="315" y1="285" x2="315" y2="395" stroke="#F59E0B" stroke-width="1.2"/>
+        <line x1="315" y1="395" x2="348" y2="410" stroke="#F59E0B" stroke-width="1.2"/>
+        <polygon points="315,395 321,382 315,370 309,382" fill="#1a2235" stroke="#F59E0B" stroke-width="1.2"/>
+
+        
+        <rect x="408" y="410" width="105" height="50" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="461" y="428" text-anchor="middle" font-size="8" fill="#F59E0B" font-weight="700">«block»</text>
+        <text x="461" y="442" text-anchor="middle" font-size="9" font-weight="600">Module USB</text>
+        <text x="461" y="455" text-anchor="middle" font-size="9" font-weight="600">C + A</text>
+        <line x1="485" y1="285" x2="461" y2="410" stroke="#F59E0B" stroke-width="1.2"/>
+        <polygon points="461,410 455,397 467,397" fill="#5B8DB8"/>
+
+        
+        <polygon points="10,450 16,460 10,470 4,460" fill="#5B8DB8" stroke="#5B8DB8" stroke-width="1"/>
+        <text x="25" y="464" font-size="9" fill="#8899B4">Composition ◆ (dépendant)</text>
+        <polygon points="200,460 206,468 200,476 194,468" fill="#1a2235" stroke="#F59E0B" stroke-width="1.2"/>
+        <text x="215" y="472" font-size="9" fill="#8899B4">Agrégation ◇ (indépendant)</text>
+      </svg>
+      <div class="diagram-caption">Fig. 4.1 — Diagramme de définition de blocs du banc E-Bench 2026</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-ibd">
+  <h2>5. Diagramme de blocs internes — E-Bench (ibd)</h2>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon purple"><i class="fa-solid fa-plug"></i></div><h3>Architecture interne des flux</h3></div>
+    <p>L'ibd montre comment les composants sont <strong>interconnectés</strong> via des ports et des flux de matière, d'énergie et d'information. Pour E-Bench, on distingue l'énergie DC 12V, le signal GPIO et les données SQLite.</p>
+    <div class="key-concept">
+      <div class="key-concept-title"><i class="fa-solid fa-key"></i> Les 3 flux de E-Bench</div>
+      <p style="margin:0;"><strong style="color:#F59E0B;">Énergie</strong> : courant DC 12V (panneau → MPPT → batterie → DC-DC → Raspberry Pi, écran, USB). <strong style="color:#60A5FA;">Information</strong> : signal GPIO PIR, données SQLite, HDMI écran. <strong style="color:#F87171;">Matière</strong> : rayonnement solaire entrant.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon green"><i class="fa-solid fa-bolt"></i></div><h3>ibd du système E-Bench</h3></div>
+    <div class="diagram-container">
+      <svg viewBox="-20 0 780 400" width="100%" style="max-width:750px;">
+        
+        <rect x="8" y="8" width="744" height="384" rx="6" fill="#111827" stroke="#5B8DB8" stroke-width="2" stroke-dasharray="8,4"/>
+        <text x="22" y="30" font-size="11" font-weight="700" fill="#C8D8E8">ibd [block] E-Bench 2026</text>
+
+        
+        <rect x="18" y="100" width="10" height="20" rx="1" fill="#F59E0B" stroke="#F59E0B"/>
+        <rect x="-12" y="85" width="32" height="50" rx="3" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="4" y="105" text-anchor="middle" font-size="7.5" fill="#F59E0B" font-weight="700"><tspan font-family="sans-serif">PV</tspan></text>
+        <text x="4" y="118" text-anchor="middle" font-size="7" font-weight="600">Panneau</text>
+        <text x="4" y="128" text-anchor="middle" font-size="7" font-weight="600">500Wc</text>
+
+        
+        <rect x="80" y="80" width="120" height="75" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="140" y="100" text-anchor="middle" font-size="9.5" fill="#F59E0B" font-weight="600">mppt : MPPT</text>
+        <text x="140" y="113" text-anchor="middle" font-size="9" fill="#C8D8E8">Victron 150|35</text>
+        <line x1="80" y1="120" x2="200" y2="120" stroke="#F59E0B" stroke-width="0.5"/>
+        <text x="90" y="133" font-size="7.5" fill="#8899B4" class="mono">η: +30% vs PWM</text>
+        <text x="90" y="145" font-size="7.5" fill="#8899B4" class="mono">Imax: 35A</text>
+
+        
+        <rect x="80" y="195" width="120" height="70" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="140" y="215" text-anchor="middle" font-size="9.5" fill="#F59E0B" font-weight="600">bat : Batterie GEL</text>
+        <line x1="80" y1="222" x2="200" y2="222" stroke="#F59E0B" stroke-width="0.5"/>
+        <text x="90" y="235" font-size="7.5" fill="#8899B4" class="mono">U : V = 12</text>
+        <text x="90" y="247" font-size="7.5" fill="#8899B4" class="mono">C : Ah = 100</text>
+        <text x="90" y="259" font-size="7.5" fill="#8899B4" class="mono">DOD : % = 50</text>
+
+        
+        <rect x="280" y="135" width="115" height="60" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="337" y="155" text-anchor="middle" font-size="9.5" fill="#F59E0B" font-weight="600">dc : Conv. DC-DC</text>
+        <line x1="280" y1="163" x2="395" y2="163" stroke="#F59E0B" stroke-width="0.5"/>
+        <text x="290" y="175" font-size="7.5" fill="#8899B4" class="mono">12V → 5V / 3A</text>
+        <text x="290" y="186" font-size="7.5" fill="#8899B4" class="mono">pertes: 0.3W</text>
+
+        
+        <rect x="470" y="60" width="140" height="100" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="540" y="80" text-anchor="middle" font-size="9.5" fill="#60A5FA" font-weight="600">rpi : Raspberry Pi 3B</text>
+        <line x1="470" y1="88" x2="610" y2="88" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="480" y="100" font-size="7.5" fill="#8899B4" class="mono">Python 3.11 asyncio</text>
+        <text x="480" y="112" font-size="7.5" fill="#8899B4" class="mono">SQLite local</text>
+        <text x="480" y="124" font-size="7.5" fill="#8899B4" class="mono">conso: ~5W moy</text>
+        <text x="480" y="136" font-size="7.5" fill="#8899B4" class="mono">GPIO 17 → PIR</text>
+
+        
+        <rect x="470" y="200" width="120" height="60" rx="4" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="530" y="220" text-anchor="middle" font-size="9.5" fill="#60A5FA" font-weight="600">ecran : Écran 7"</text>
+        <line x1="470" y1="228" x2="590" y2="228" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="480" y="240" font-size="7.5" fill="#8899B4" class="mono">HDMI · 1024×600</text>
+        <text x="480" y="252" font-size="7.5" fill="#8899B4" class="mono">tactile · 5W</text>
+
+        
+        <rect x="470" y="295" width="115" height="60" rx="4" fill="#1a2235" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="527" y="315" text-anchor="middle" font-size="9.5" fill="#A78BFA" font-weight="600">pir : Capteur PIR</text>
+        <line x1="470" y1="323" x2="585" y2="323" stroke="#A78BFA" stroke-width="0.5"/>
+        <text x="480" y="336" font-size="7.5" fill="#8899B4" class="mono">HC-SR501, 7m, 120°</text>
+        <text x="480" y="348" font-size="7.5" fill="#8899B4" class="mono">GPIO 17 · 3.3V</text>
+
+        
+        <rect x="660" y="180" width="80" height="70" rx="4" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="700" y="200" text-anchor="middle" font-size="9" fill="#F59E0B" font-weight="600">usb : Module</text>
+        <text x="700" y="213" text-anchor="middle" font-size="9" fill="#F59E0B" font-weight="600">USB C+A</text>
+        <line x1="660" y1="220" x2="740" y2="220" stroke="#F59E0B" stroke-width="0.5"/>
+        <text x="668" y="232" font-size="7.5" fill="#8899B4" class="mono">USB-C: 45W</text>
+        <text x="668" y="244" font-size="7.5" fill="#8899B4" class="mono">USB-A: 12W</text>
+
+        
+        
+        <rect x="27" y="108" width="12" height="12" rx="2" fill="#F87171" stroke="#F87171"/>
+        <rect x="72" y="108" width="12" height="12" rx="2" fill="#F87171" stroke="#F87171"/>
+        <line x1="39" y1="114" x2="72" y2="114" stroke="#F87171" stroke-width="2"/>
+        <text x="55" y="107" text-anchor="middle" font-size="8" fill="#F87171" font-weight="600">Rayonn. PV</text>
+
+        
+        <rect x="128" y="148" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <rect x="128" y="187" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <line x1="134" y1="160" x2="134" y2="187" stroke="#F59E0B" stroke-width="2"/>
+        <text x="148" y="180" font-size="8" fill="#F59E0B" font-weight="600">12V DC</text>
+
+        
+        <rect x="192" y="218" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <rect x="272" y="160" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <line x1="204" y1="224" x2="260" y2="224" stroke="#F59E0B" stroke-width="2"/>
+        <line x1="260" y1="224" x2="278" y2="166" stroke="#F59E0B" stroke-width="2"/>
+        <text x="240" y="218" font-size="8" fill="#F59E0B" font-weight="600">12V</text>
+
+        
+        <rect x="387" y="152" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <rect x="462" y="100" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <line x1="399" y1="158" x2="450" y2="158" stroke="#F59E0B" stroke-width="2"/>
+        <line x1="450" y1="158" x2="450" y2="106" stroke="#F59E0B" stroke-width="2"/>
+        <line x1="450" y1="106" x2="462" y2="106" stroke="#F59E0B" stroke-width="2"/>
+        <text x="432" y="152" font-size="8" fill="#F59E0B" font-weight="600">5V</text>
+
+        
+        <rect x="506" y="153" width="12" height="12" rx="2" fill="#60A5FA" stroke="#60A5FA"/>
+        <rect x="506" y="192" width="12" height="12" rx="2" fill="#60A5FA" stroke="#60A5FA"/>
+        <line x1="512" y1="165" x2="512" y2="192" stroke="#60A5FA" stroke-width="2"/>
+        <text x="527" y="183" font-size="8" fill="#60A5FA" font-weight="600">HDMI</text>
+
+        
+        <rect x="505" y="287" width="12" height="12" rx="2" fill="#A78BFA" stroke="#A78BFA"/>
+        <rect x="505" y="153" width="12" height="12" rx="2" fill="#A78BFA" stroke="#A78BFA"/>
+        <line x1="511" y1="287" x2="511" y2="165" stroke="#A78BFA" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="525" y="230" font-size="8" fill="#A78BFA" font-weight="600">GPIO 17</text>
+
+        
+        <rect x="387" y="158" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <rect x="652" y="205" width="12" height="12" rx="2" fill="#F59E0B" stroke="#F59E0B"/>
+        <line x1="399" y1="164" x2="640" y2="211" stroke="#F59E0B" stroke-width="2"/>
+        <text x="540" y="195" font-size="8" fill="#F59E0B" font-weight="600">5V USB</text>
+
+        
+        <rect x="15" y="355" width="12" height="12" rx="2" fill="#F87171"/>
+        <text x="33" y="365" font-size="9" fill="#8899B4">Matière (rayonnement)</text>
+        <rect x="175" y="355" width="12" height="12" rx="2" fill="#F59E0B"/>
+        <text x="193" y="365" font-size="9" fill="#8899B4">Énergie (DC)</text>
+        <rect x="320" y="355" width="12" height="12" rx="2" fill="#60A5FA"/>
+        <text x="338" y="365" font-size="9" fill="#8899B4">Information (numérique)</text>
+        <rect x="510" y="355" width="12" height="12" rx="2" fill="#A78BFA"/>
+        <text x="528" y="365" font-size="9" fill="#8899B4">Signal GPIO</text>
+      </svg>
+      <div class="diagram-caption">Fig. 5.1 — Diagramme de blocs internes du système E-Bench 2026</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-stm">
+  <h2>6. Diagramme d'états — E-Bench (stm)</h2>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon red"><i class="fa-solid fa-arrows-rotate"></i></div><h3>Évolution des états du banc</h3></div>
+    <p>Le diagramme d'états décrit comment le banc <strong>évolue au fil du temps</strong> : de l'état de veille profonde en pleine nuit à l'état actif quand un usager s'approche, en passant par le mode éco sous 20% de batterie.</p>
+    <div class="key-concept">
+      <div class="key-concept-title"><i class="fa-solid fa-key"></i> Syntaxe des transitions</div>
+      <p style="margin:0;"><code>événement [condition] / action</code> — Exemple : <code>pir_detecte [batterie > 20%] / réveillerEcran()</code></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon blue"><i class="fa-solid fa-chart-bar"></i></div><h3>Machine à états de sensor_manager.py</h3></div>
+    <div class="diagram-container">
+      <!-- STM diagram — viewBox agrandi pour donner de l'air aux labels -->
+      <svg viewBox="0 0 820 480" width="100%" style="max-width:820px;">
+
+        <!-- ══ Point initial ══ -->
+        <circle cx="60" cy="55" r="12" fill="#00D4A0"/>
+        <line x1="60" y1="67" x2="60" y2="95" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="60,95 55,87 65,87" fill="#5B8DB8"/>
+
+        <!-- ══ ÉTAT : Veille profonde — en haut à gauche ══ -->
+        <rect x="8" y="100" width="175" height="65" rx="22" fill="#1a2235" stroke="#60A5FA" stroke-width="2"/>
+        <text x="95" y="128" text-anchor="middle" font-size="12" font-weight="700" fill="#60A5FA">Veille profonde</text>
+        <text x="95" y="145" text-anchor="middle" font-size="9" fill="#8899B4">5.5W · écran éteint · USB bridé</text>
+
+        <!-- ══ ÉTAT : Actif — en haut au centre ══ -->
+        <rect x="310" y="60" width="185" height="70" rx="22" fill="#1a2235" stroke="#34D399" stroke-width="2"/>
+        <text x="402" y="88"  text-anchor="middle" font-size="12" font-weight="700" fill="#34D399">Actif</text>
+        <text x="402" y="105" text-anchor="middle" font-size="9" fill="#8899B4">10–62W · écran allumé</text>
+        <text x="402" y="119" text-anchor="middle" font-size="9" fill="#8899B4">USB disponible · PIR actif</text>
+
+        <!-- ══ ÉTAT : Mode Éco — droite ══ -->
+        <rect x="590" y="185" width="195" height="70" rx="22" fill="#1a2235" stroke="#F59E0B" stroke-width="2"/>
+        <text x="687" y="213" text-anchor="middle" font-size="12" font-weight="700" fill="#F59E0B">Mode Éco</text>
+        <text x="687" y="230" text-anchor="middle" font-size="9" fill="#8899B4">bat &lt; 20% · luminosité ↓</text>
+        <text x="687" y="244" text-anchor="middle" font-size="9" fill="#8899B4">USB-C suspendu</text>
+
+        <!-- ══ ÉTAT : Chargement actif — centre bas ══ -->
+        <rect x="310" y="320" width="185" height="70" rx="22" fill="#1a2235" stroke="#F59E0B" stroke-width="2"/>
+        <text x="402" y="348" text-anchor="middle" font-size="12" font-weight="700" fill="#F59E0B">Chargement actif</text>
+        <text x="402" y="365" text-anchor="middle" font-size="9" fill="#8899B4">USB pleine charge · 62.1W pic</text>
+
+        <!-- ══ ÉTAT : Attente 60s — gauche bas ══ -->
+        <rect x="8" y="285" width="175" height="65" rx="22" fill="#1a2235" stroke="#A78BFA" stroke-width="2"/>
+        <text x="95" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#A78BFA">Attente (60s)</text>
+        <text x="95" y="329" text-anchor="middle" font-size="9" fill="#8899B4">pas de mouvement</text>
+        <text x="95" y="342" text-anchor="middle" font-size="9" fill="#8899B4">timer éteindre écran</text>
+
+        <!-- ══ Point final ══ -->
+        <circle cx="95" cy="430" r="12" fill="none" stroke="#00D4A0" stroke-width="2"/>
+        <circle cx="95" cy="430" r="7"  fill="#00D4A0"/>
+
+        <!-- ══════════════════════════════════════════
+             TRANSITIONS — chaque label sur fond opaque
+             ══════════════════════════════════════════ -->
+
+        <!-- 1. Veille → Actif  (arc courbe, label AU-DESSUS de l'arc) -->
+        <path d="M183,118 Q248,72 310,84" fill="none" stroke="#34D399" stroke-width="1.5"/>
+        <polygon points="310,84 303,79 302,89" fill="#34D399"/>
+        <rect x="198" y="60" width="175" height="28" rx="4" fill="#0D1220" stroke="#34D399" stroke-width="0.8"/>
+        <text x="285" y="73"  text-anchor="middle" font-size="8.5" fill="#34D399" font-weight="600">pir_détecté [bat &gt; 20%]</text>
+        <text x="285" y="84"  text-anchor="middle" font-size="8"   fill="#8899B4">/ réveillerEcran()</text>
+
+        <!-- 2. Actif → Attente  (arc à gauche, label à gauche sur fond) -->
+        <path d="M310,108 Q195,155 183,290" fill="none" stroke="#A78BFA" stroke-width="1.5"/>
+        <polygon points="183,290 178,281 188,280" fill="#A78BFA"/>
+        <rect x="115" y="190" width="148" height="28" rx="4" fill="#0D1220" stroke="#A78BFA" stroke-width="0.8"/>
+        <text x="189" y="203" text-anchor="middle" font-size="8.5" fill="#A78BFA" font-weight="600">inactif 60s</text>
+        <text x="189" y="214" text-anchor="middle" font-size="8"   fill="#8899B4">/ timer.start(60s)</text>
+
+        <!-- 3. Attente → fin  (flèche vers le bas) -->
+        <line x1="95" y1="350" x2="95" y2="415" stroke="#60A5FA" stroke-width="1.5"/>
+        <polygon points="95,415 90,406 100,406" fill="#60A5FA"/>
+        <rect x="102" y="374" width="118" height="28" rx="4" fill="#0D1220" stroke="#60A5FA" stroke-width="0.8"/>
+        <text x="161" y="387" text-anchor="middle" font-size="8.5" fill="#60A5FA" font-weight="600">timer_expiré</text>
+        <text x="161" y="398" text-anchor="middle" font-size="8"   fill="#8899B4">/ éteindrEcran()</text>
+
+        <!-- 4. Actif → Chargement  (flèche vers le bas, label à DROITE) -->
+        <line x1="402" y1="130" x2="402" y2="320" stroke="#F59E0B" stroke-width="1.5"/>
+        <polygon points="402,320 397,311 407,311" fill="#F59E0B"/>
+        <rect x="410" y="215" width="128" height="28" rx="4" fill="#0D1220" stroke="#F59E0B" stroke-width="0.8"/>
+        <text x="474" y="228" text-anchor="middle" font-size="8.5" fill="#F59E0B" font-weight="600">USB connecté</text>
+        <text x="474" y="239" text-anchor="middle" font-size="8"   fill="#8899B4">/ activerUSB()</text>
+
+        <!-- 5. Chargement → Actif  (arc retour gauche, label à gauche) -->
+        <path d="M310,345 Q272,265 310,148" fill="none" stroke="#34D399" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="310,148 305,157 315,157" fill="#34D399"/>
+        <rect x="162" y="238" width="128" height="16" rx="4" fill="#0D1220" stroke="#34D399" stroke-width="0.8"/>
+        <text x="226" y="250" text-anchor="middle" font-size="8.5" fill="#34D399" font-weight="600">USB débranché</text>
+
+        <!-- 6. Actif → Mode Éco  (arc droite descendant, label AU-DESSUS) -->
+        <path d="M495,100 Q590,132 590,195" fill="none" stroke="#F59E0B" stroke-width="1.5"/>
+        <polygon points="590,195 585,186 595,186" fill="#F59E0B"/>
+        <rect x="510" y="118" width="140" height="28" rx="4" fill="#0D1220" stroke="#F59E0B" stroke-width="0.8"/>
+        <text x="580" y="131" text-anchor="middle" font-size="8.5" fill="#F59E0B" font-weight="600">batterie &lt; 20%</text>
+        <text x="580" y="142" text-anchor="middle" font-size="8"   fill="#8899B4">/ modeEco()</text>
+
+        <!-- 7. Mode Éco → Actif  (arc retour, label EN-DESSOUS de l'arc) -->
+        <path d="M590,220 Q525,188 495,130" fill="none" stroke="#34D399" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="495,130 490,139 500,140" fill="#34D399"/>
+        <rect x="502" y="167" width="140" height="28" rx="4" fill="#0D1220" stroke="#34D399" stroke-width="0.8"/>
+        <text x="572" y="180" text-anchor="middle" font-size="8.5" fill="#34D399" font-weight="600">batterie &gt; 30%</text>
+        <text x="572" y="191" text-anchor="middle" font-size="8"   fill="#8899B4">/ reprendre()</text>
+
+        <!-- 8. Shutdown manuel (ligne pointillée de Veille vers fin) -->
+        <path d="M50,165 Q50,400 83,418" fill="none" stroke="#5B8DB8" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <polygon points="83,418 77,410 87,409" fill="#5B8DB8"/>
+        <rect x="2" y="335" width="52" height="28" rx="4" fill="#0D1220" stroke="#5B8DB8" stroke-width="0.8"/>
+        <text x="28" y="348" text-anchor="middle" font-size="8" fill="#8899B4" font-style="italic">shutdown</text>
+        <text x="28" y="359" text-anchor="middle" font-size="8" fill="#8899B4" font-style="italic">manuel</text>
+
+      </svg>
+      <div class="diagram-caption">Fig. 6.1 — Diagramme d'états du banc E-Bench (machine à états sensor_manager.py)</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-sd">
+  <h2>7. Diagramme de séquence — E-Bench (seq)</h2>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon green"><i class="fa-regular fa-clock"></i></div><h3>Scénario : Détection et réveil du banc</h3></div>
+    <p>Ce diagramme montre la séquence complète quand un <strong>usager s'approche</strong> du banc : depuis la détection PIR jusqu'à l'affichage de l'interface et l'activation USB, avec la gestion du cas où la batterie est trop faible.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon blue"><i class="fa-solid fa-chart-bar"></i></div><h3>Séquence de détection et activation</h3></div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 720 470" width="100%" style="max-width:710px;">
+        
+        <rect x="15" y="10" width="80" height="35" rx="4" fill="#1a2235" stroke="#5B8DB8" stroke-width="1.5"/>
+        <text x="55" y="32" text-anchor="middle" font-size="9.5" font-weight="600">Usager</text>
+        <line x1="55" y1="45" x2="55" y2="460" stroke="#5B8DB8" stroke-width="1" stroke-dasharray="5,4"/>
+
+        <rect x="130" y="10" width="95" height="35" rx="4" fill="#1e1840" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="177" y="32" text-anchor="middle" font-size="9.5" font-weight="600" fill="#A78BFA">PIR HC-SR501</text>
+        <line x1="177" y1="45" x2="177" y2="460" stroke="#A78BFA" stroke-width="1" stroke-dasharray="5,4"/>
+
+        <rect x="265" y="10" width="110" height="35" rx="4" fill="#0D2847" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="320" y="32" text-anchor="middle" font-size="9.5" font-weight="600" fill="#60A5FA">Raspberry Pi 3B</text>
+        <line x1="320" y1="45" x2="320" y2="460" stroke="#60A5FA" stroke-width="1" stroke-dasharray="5,4"/>
+
+        <rect x="415" y="10" width="95" height="35" rx="4" fill="#0D2847" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="462" y="32" text-anchor="middle" font-size="9.5" font-weight="600" fill="#60A5FA">Écran 7" IPS</text>
+        <line x1="462" y1="45" x2="462" y2="460" stroke="#60A5FA" stroke-width="1" stroke-dasharray="5,4"/>
+
+        <rect x="545" y="10" width="95" height="35" rx="4" fill="#2a1e08" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="592" y="32" text-anchor="middle" font-size="9.5" font-weight="600" fill="#F59E0B">Module USB</text>
+        <line x1="592" y1="45" x2="592" y2="460" stroke="#F59E0B" stroke-width="1" stroke-dasharray="5,4"/>
+
+        
+        <text x="640" y="85" font-size="8.5" fill="#8899B4">t₀</text>
+
+        
+        <line x1="55" y1="80" x2="177" y2="80" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="177,80 170,75 170,85" fill="#5B8DB8"/>
+        <text x="116" y="74" text-anchor="middle" font-size="8.5" fill="#C8D8E8" font-weight="500">1: approcher() [&lt;7m]</text>
+
+        
+        <line x1="177" y1="108" x2="320" y2="108" stroke="#A78BFA" stroke-width="1.5"/>
+        <polygon points="320,108 313,103 313,113" fill="#A78BFA"/>
+        <text x="248" y="102" text-anchor="middle" font-size="8.5" fill="#A78BFA" font-weight="500">2: GPIO17_HIGH()</text>
+
+        
+        <rect x="315" y="120" width="10" height="25" fill="#0D2847" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="380" y="138" font-size="8.5" fill="#8899B4" font-style="italic">lire batterie MPPT</text>
+
+        
+        <rect x="225" y="150" width="480" height="240" rx="4" fill="none" stroke="#34D399" stroke-width="1.5"/>
+        <rect x="225" y="150" width="36" height="16" rx="2" fill="#34D399"/>
+        <text x="243" y="162" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1a2235">alt</text>
+        <text x="290" y="162" font-size="8.5" fill="#34D399" font-weight="600">[batterie ≥ 20%]</text>
+
+        
+        <line x1="320" y1="185" x2="462" y2="185" stroke="#34D399" stroke-width="1.5"/>
+        <polygon points="462,185 455,180 455,190" fill="#34D399"/>
+        <text x="391" y="179" text-anchor="middle" font-size="8.5" fill="#34D399" font-weight="500">3: reveillerEcran()</text>
+
+        
+        <rect x="457" y="197" width="10" height="25" fill="#0D2847" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="500" y="215" font-size="8.5" fill="#8899B4" font-style="italic">charger UI</text>
+
+        
+        <line x1="462" y1="225" x2="320" y2="225" stroke="#34D399" stroke-width="1.2" stroke-dasharray="5,3"/>
+        <polygon points="320,225 327,220 327,230" fill="#34D399"/>
+        <text x="391" y="220" text-anchor="middle" font-size="8.5" fill="#8899B4">ecranPrêt()</text>
+
+        
+        <line x1="320" y1="250" x2="592" y2="250" stroke="#F59E0B" stroke-width="1.5"/>
+        <polygon points="592,250 585,245 585,255" fill="#F59E0B"/>
+        <text x="456" y="244" text-anchor="middle" font-size="8.5" fill="#F59E0B" font-weight="500">4: activerUSB()</text>
+
+        
+        <line x1="592" y1="268" x2="320" y2="268" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="5,3"/>
+        <polygon points="320,268 327,263 327,273" fill="#F59E0B"/>
+        <text x="456" y="283" text-anchor="middle" font-size="8.5" fill="#8899B4">USB prêt (45W / 12W)</text>
+
+        
+        <line x1="225" y1="302" x2="705" y2="302" stroke="#34D399" stroke-width="0.5" stroke-dasharray="5,3"/>
+        <text x="290" y="316" font-size="8.5" fill="#F87171" font-weight="600">[batterie &lt; 20%]</text>
+
+        
+        <line x1="320" y1="332" x2="462" y2="332" stroke="#F87171" stroke-width="1.5"/>
+        <polygon points="462,332 455,327 455,337" fill="#F87171"/>
+        <text x="391" y="325" text-anchor="middle" font-size="8.5" fill="#F87171" font-weight="500">5: afficherModeEco()</text>
+        <text x="391" y="352" text-anchor="middle" font-size="8" fill="#8899B4">USB suspendu · luminosité 40%</text>
+
+        
+        <text x="640" y="392" font-size="8.5" fill="#8899B4">t₁</text>
+
+        
+        <line x1="320" y1="390" x2="320" y2="390" stroke="#60A5FA" stroke-width="1.5"/>
+        <rect x="315" y="392" width="10" height="25" fill="#0D2847" stroke="#60A5FA" stroke-width="0.5"/>
+        <text x="380" y="408" font-size="8.5" fill="#8899B4" font-style="italic">stocker SQLite local</text>
+
+        
+        <line x1="320" y1="428" x2="320" y2="428"/>
+        <text x="340" y="440" font-size="8.5" fill="#8899B4" font-style="italic">asyncio.sleep(10) — boucle 10s</text>
+      </svg>
+      <div class="diagram-caption">Fig. 7.1 — Diagramme de séquence : détection PIR et réveil du banc E-Bench</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-act">
+  <h2>8. Diagramme d'activité — E-Bench (act)</h2>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon orange"><i class="fa-solid fa-play"></i></div><h3>Boucle principale de sensor_manager.py</h3></div>
+    <p>Le diagramme d'activité modélise l'<strong>algorithme Python asyncio</strong> qui tourne en continu sur le Raspberry Pi 3B, toutes les 10 secondes : lecture capteurs, détection présence, gestion énergie, mise à jour affichage.</p>
+    <div class="key-concept">
+      <div class="key-concept-title"><i class="fa-solid fa-key"></i> Boucle asyncio</div>
+      <p style="margin:0;">Le script <code>sensor_manager.py</code> utilise <code>asyncio.sleep(10)</code> pour une boucle toutes les 10s. La détection PIR est sur <strong>GPIO 17</strong> et l'usage CPU reste inférieur à <strong>2%</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon green"><i class="fa-solid fa-arrows-rotate"></i></div><h3>Activité : boucle sensor_manager</h3></div>
+    <div class="diagram-container">
+      <svg viewBox="0 0 520 680" width="100%" style="max-width:510px;">
+        
+        <circle cx="260" cy="25" r="12" fill="#00D4A0"/>
+        <line x1="260" y1="37" x2="260" y2="58" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="260,58 255,51 265,51" fill="#5B8DB8"/>
+
+        
+        <rect x="155" y="63" width="210" height="42" rx="18" fill="#1a2235" stroke="#34D399" stroke-width="1.5"/>
+        <text x="260" y="80" text-anchor="middle" font-size="11" font-weight="600" fill="#34D399">Initialisation</text>
+        <text x="260" y="97" text-anchor="middle" font-size="9" fill="#8899B4">MPPT · PIR · Écran · SQLite</text>
+
+        <line x1="260" y1="105" x2="260" y2="130" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="260,130 255,123 265,123" fill="#5B8DB8"/>
+
+        
+        <rect x="120" y="133" width="270" height="8" rx="2" fill="#5B8DB8"/>
+        <text x="125" y="128" font-size="8.5" fill="#8899B4" font-style="italic">Fork : lectures parallèles</text>
+        <line x1="165" y1="141" x2="165" y2="162" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="255" y1="141" x2="255" y2="162" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="345" y1="141" x2="345" y2="162" stroke="#5B8DB8" stroke-width="1.5"/>
+
+        
+        <!-- Lire batterie % — colonne gauche -->
+        <rect x="85" y="162" width="160" height="38" rx="14" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="165" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#F59E0B">Lire batterie %</text>
+        <text x="165" y="193" text-anchor="middle" font-size="8.5" fill="#8899B4">MPPT Victron</text>
+
+        
+        <!-- Prod. PV — colonne centrale -->
+        <rect x="205" y="162" width="100" height="38" rx="14" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="255" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#F59E0B">Prod. PV</text>
+        <text x="255" y="193" text-anchor="middle" font-size="8.5" fill="#8899B4">en Watts</text>
+
+        
+        <!-- Lire GPIO 17 — colonne droite -->
+        <rect x="275" y="162" width="140" height="38" rx="14" fill="#1a2235" stroke="#A78BFA" stroke-width="1.5"/>
+        <text x="345" y="180" text-anchor="middle" font-size="10" font-weight="600" fill="#A78BFA">Lire GPIO 17</text>
+        <text x="345" y="193" text-anchor="middle" font-size="8.5" fill="#8899B4">PIR HC-SR501</text>
+
+        
+        <line x1="165" y1="200" x2="165" y2="225" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="255" y1="200" x2="255" y2="225" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="345" y1="200" x2="345" y2="225" stroke="#5B8DB8" stroke-width="1.5"/>
+        <rect x="120" y="225" width="270" height="8" rx="2" fill="#5B8DB8"/>
+        <text x="125" y="221" font-size="8.5" fill="#8899B4" font-style="italic">Join : résultats consolidés</text>
+
+        <line x1="260" y1="233" x2="260" y2="255" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="260,255 255,248 265,248" fill="#5B8DB8"/>
+
+        
+        <polygon points="260,260 295,280 260,300 225,280" fill="#1a2235" stroke="#5B8DB8" stroke-width="1.5"/>
+        <text x="260" y="275" text-anchor="middle" font-size="8.5" font-weight="600">PIR ?</text>
+        <text x="260" y="290" text-anchor="middle" font-size="8" fill="#8899B4">présence</text>
+
+        
+        <line x1="295" y1="280" x2="390" y2="280" stroke="#34D399" stroke-width="1.5"/>
+        <line x1="390" y1="280" x2="390" y2="312" stroke="#34D399" stroke-width="1.5"/>
+        <text x="340" y="272" font-size="8.5" fill="#34D399" font-weight="600">[oui]</text>
+        <polygon points="390,312 385,305 395,305" fill="#34D399"/>
+
+        <rect x="325" y="315" width="130" height="38" rx="14" fill="#0a2218" stroke="#34D399" stroke-width="1.5"/>
+        <text x="390" y="332" text-anchor="middle" font-size="10" font-weight="600" fill="#34D399">Réveil écran</text>
+        <text x="390" y="345" text-anchor="middle" font-size="8.5" fill="#8899B4">timer 60s</text>
+
+        
+        <line x1="225" y1="280" x2="130" y2="280" stroke="#6B6B6B" stroke-width="1.2"/>
+        <line x1="130" y1="280" x2="130" y2="380" stroke="#6B6B6B" stroke-width="1.2"/>
+        <text x="80" y="272" font-size="8.5" fill="#8899B4" font-weight="600">[non]</text>
+        <line x1="390" y1="353" x2="390" y2="380" stroke="#34D399" stroke-width="1.5"/>
+        <line x1="130" y1="380" x2="390" y2="380" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="260" y1="380" x2="260" y2="400" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="260,400 255,393 265,393" fill="#5B8DB8"/>
+
+        
+        <polygon points="260,405 300,425 260,445 220,425" fill="#1a2235" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="260" y="421" text-anchor="middle" font-size="8.5" font-weight="600">Bat</text>
+        <text x="260" y="436" text-anchor="middle" font-size="8" fill="#F59E0B">&lt;20%?</text>
+
+        
+        <line x1="300" y1="425" x2="400" y2="425" stroke="#F59E0B" stroke-width="1.5"/>
+        <line x1="400" y1="425" x2="400" y2="455" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="347" y="418" font-size="8.5" fill="#F59E0B" font-weight="600">[oui]</text>
+        <polygon points="400,455 395,448 405,448" fill="#F59E0B"/>
+
+        <rect x="335" y="458" width="130" height="38" rx="14" fill="#2a1e08" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="400" y="473" text-anchor="middle" font-size="10" font-weight="600" fill="#F59E0B">Mode Éco</text>
+        <text x="400" y="486" text-anchor="middle" font-size="8.5" fill="#8899B4">USB suspendu</text>
+
+        
+        <line x1="220" y1="425" x2="130" y2="425" stroke="#60A5FA" stroke-width="1.5"/>
+        <line x1="130" y1="425" x2="130" y2="468" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="80" y="418" font-size="8.5" fill="#8899B4" font-weight="600">[non]</text>
+        <polygon points="130,468 125,461 135,461" fill="#60A5FA"/>
+
+        <rect x="55" y="470" width="150" height="38" rx="14" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="130" y="487" text-anchor="middle" font-size="10" font-weight="600" fill="#60A5FA">Stocker SQLite</text>
+        <text x="130" y="500" text-anchor="middle" font-size="8.5" fill="#8899B4">données locales</text>
+
+        
+        <line x1="130" y1="508" x2="130" y2="560" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="400" y1="496" x2="400" y2="560" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="130" y1="560" x2="400" y2="560" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="260" y1="560" x2="260" y2="580" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="260,580 255,573 265,573" fill="#5B8DB8"/>
+
+        
+        <rect x="155" y="582" width="210" height="42" rx="18" fill="#1a2235" stroke="#60A5FA" stroke-width="1.5"/>
+        <text x="260" y="600" text-anchor="middle" font-size="11" font-weight="600" fill="#60A5FA">asyncio.sleep(10)</text>
+        <text x="260" y="616" text-anchor="middle" font-size="9" fill="#8899B4">CPU &lt; 2% · attendre 10s</text>
+
+        
+        <line x1="260" y1="624" x2="260" y2="645" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="260" y1="645" x2="490" y2="645" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="490" y1="645" x2="490" y2="137" stroke="#5B8DB8" stroke-width="1.5"/>
+        <line x1="490" y1="137" x2="390" y2="137" stroke="#5B8DB8" stroke-width="1.5"/>
+        <polygon points="390,137 397,132 397,142" fill="#5B8DB8"/>
+        <text x="507" y="400" font-size="9" fill="#8899B4" font-style="italic" transform="rotate(90,507,400)">Boucle infinie</text>
+      </svg>
+      <div class="diagram-caption">Fig. 8.1 — Diagramme d'activité : boucle principale sensor_manager.py (E-Bench)</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <p><strong>E-Bench 2026</strong> — Modélisation SysML complète · Projet STI2D · <strong>Les Ingénieux</strong> · Hauts-de-France<br>
+  Basé sur le cours SysML Terminale · 7 diagrammes : req · uc · bdd · ibd · stm · seq · act</p>
+</footer>
+
+<script>
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.tab-panel');
+
+function activateTab(target) {
+  tabBtns.forEach(b => b.classList.remove('active'));
+  panels.forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector(`.tab-btn[data-tab="${target}"]`);
+  const panel = document.getElementById('panel-' + target);
+  if (btn && panel) {
+    btn.classList.add('active');
+    panel.classList.add('active');
+  }
+}
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.getAttribute('data-tab');
+    activateTab(target);
+    history.replaceState(null, '', '#' + target);
+  });
+});
+
+const hashTarget = window.location.hash.replace('#', '').trim();
+if (hashTarget) activateTab(hashTarget);
+
+// Vérification FontAwesome — charge un CDN alternatif si le premier échoue
+(function checkFontAwesome() {
+  const testEl = document.createElement('i');
+  testEl.className = 'fa-solid fa-sun';
+  testEl.style.cssText = 'position:absolute;left:-9999px;font-size:16px;';
+  document.body.appendChild(testEl);
+  const w = testEl.getBoundingClientRect().width;
+  document.body.removeChild(testEl);
+
+  if (w === 0 || w === 13.333) { // not rendered as icon font
+    const fallback = document.createElement('link');
+    fallback.rel = 'stylesheet';
+    fallback.href = 'https://use.fontawesome.com/releases/v6.5.0/css/all.css';
+    fallback.crossOrigin = 'anonymous';
+    document.head.appendChild(fallback);
+  }
+})();
+</script>
+</body>
+</html>

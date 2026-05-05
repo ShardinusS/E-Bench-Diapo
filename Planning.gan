@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Projet STI2D 2025" view-date="2025-03-10" view-index="0" gantt-divider-location="400" version="3.3.3316" locale="fr_FR">
+
+<description><![CDATA[Projet STI2D — Planning optimisé — Mars à Mai 2025]]></description>
+
+<tasks>
+
+<!-- JALONS -->
+<task id="1" name="📅 JALONS" color="#2c3e50" start="2025-03-03" duration="65" expand="true">
+    <task id="2" name="🚀 Lancement" meeting="true" start="2025-03-03" duration="0" color="#2ecc71"/>
+    <task id="3" name="✅ Prototype validé" meeting="true" start="2025-05-02" duration="0" color="#27ae60"/>
+    <task id="4" name="📄 Dossier rendu" meeting="true" start="2025-05-05" duration="0" color="#e67e22"/>
+    <task id="5" name="🎯 Grand oral" meeting="true" start="2025-05-07" duration="0" color="#e74c3c"/>
+</task>
+
+<!-- COLLECTIF -->
+<task id="10" name="👥 COLLECTIF" color="#7f8c8d" start="2025-03-03" duration="2" expand="true">
+    <task id="11" name="Brainstorming" start="2025-03-03" duration="2" color="#95a5a6"/>
+</task>
+
+<!-- AXEL -->
+<task id="20" name="🔵 AXEL" color="#2980b9" start="2025-03-03" duration="60" expand="true">
+    <task id="21" name="Benchmark" start="2025-03-03" duration="12" color="#3498db"/>
+    <task id="22" name="Veille techno" start="2025-03-19" duration="7" color="#3498db"/>
+    <task id="23" name="Calculs structure" start="2025-03-28" duration="4" color="#5dade2"/>
+    <task id="24" name="Schémas électriques" start="2025-04-01" duration="2" color="#5dade2"/>
+    <task id="25" name="CAO" start="2025-04-01" duration="3" color="#5dade2"/>
+    <task id="26" name="Design écran" start="2025-04-02" duration="3" color="#85c1e9"/>
+    <task id="27" name="Programmation" start="2025-04-03" duration="2" color="#9b59b6"/>
+    <task id="28" name="Tests API" start="2025-04-29" duration="4" color="#8e44ad"/>
+    <task id="29" name="Interface écran" start="2025-05-01" duration="2" color="#8e44ad"/>
+</task>
+
+<!-- KENZO -->
+<task id="30" name="🟢 KENZO" color="#27ae60" start="2025-03-03" duration="65" expand="true">
+    <task id="31" name="Croquis" start="2025-03-03" duration="7" color="#2ecc71"/>
+    <task id="32" name="Recherche composants" start="2025-03-12" duration="13" color="#2ecc71"/>
+    <task id="33" name="Tests API" start="2025-03-25" duration="5" color="#16a085"/>
+    <task id="34" name="Config OS" start="2025-04-01" duration="4" color="#16a085"/>
+    <task id="35" name="Instagram" start="2025-04-02" duration="3" color="#e74c3c"/>
+    <task id="36" name="Achat composants" start="2025-04-04" duration="1" color="#f39c12"/>
+    <task id="37" name="Photos/Vidéos" start="2025-04-30" duration="3" color="#e74c3c"/>
+    <task id="38" name="Documentation" start="2025-05-02" duration="3" color="#c0392b"/>
+    <task id="39" name="Préparation oral" start="2025-05-06" duration="1" color="#c0392b"/>
+</task>
+
+<!-- YOHAN -->
+<task id="40" name="🟡 YOHAN" color="#f1c40f" start="2025-03-03" duration="60" expand="true">
+    <task id="41" name="Modélisation 3D" start="2025-03-03" duration="25" color="#f4d03f"/>
+    <task id="42" name="Construction bois" start="2025-03-26" duration="6" color="#d68910"/>
+    <task id="43" name="Programmation" start="2025-03-31" duration="3" color="#9b59b6"/>
+    <task id="44" name="Intégration électronique" start="2025-04-03" duration="2" color="#d68910"/>
+    <task id="45" name="Tests unitaires" start="2025-05-01" duration="4" color="#8e44ad"/>
+</task>
+
+<!-- LORENZO -->
+<task id="50" name="🟠 LORENZO" color="#e67e22" start="2025-03-03" duration="60" expand="true">
+    <task id="51" name="Croquis" start="2025-03-03" duration="15" color="#eb984e"/>
+    <task id="52" name="Schémas électriques" start="2025-03-21" duration="7" color="#eb984e"/>
+    <task id="53" name="Achat composants" start="2025-04-01" duration="4" color="#f39c12"/>
+    <task id="54" name="Construction bois" start="2025-04-04" duration="1" color="#d35400"/>
+    <task id="55" name="Installation électronique" start="2025-05-01" duration="4" color="#d35400"/>
+    <task id="56" name="Normes STI2D" start="2025-03-17" duration="2" color="#ca6f1e"/>
+</task>
+
+<!-- MATHEO -->
+<task id="60" name="🔴 MATHEO" color="#c0392b" start="2025-03-03" duration="60" expand="true">
+    <task id="61" name="Schémas électriques" start="2025-03-03" duration="13" color="#e74c3c"/>
+    <task id="62" name="Calculs structure" start="2025-03-20" duration="3" color="#ec7063"/>
+    <task id="63" name="CAO" start="2025-03-25" duration="6" color="#ec7063"/>
+    <task id="64" name="Config système" start="2025-03-03" duration="5" color="#af7ac5"/>
+    <task id="65" name="Achat composants" start="2025-03-10" duration="5" color="#f39c12"/>
+    <task id="66" name="Construction bois" start="2025-04-02" duration="3" color="#d35400"/>
+    <task id="67" name="Intégration électrique" start="2025-05-01" duration="4" color="#922b21"/>
+    <task id="68" name="Tests intégration" start="2025-05-02" duration="3" color="#922b21"/>
+</task>
+
+</tasks>
+
+<resources>
+    <resource id="0" name="Axel"/>
+    <resource id="1" name="Kenzo"/>
+    <resource id="2" name="Yohan"/>
+    <resource id="3" name="Lorenzo"/>
+    <resource id="4" name="Mathéo"/>
+</resources>
+
+<vacations>
+    <vacation start="2025-04-11" end="2025-04-25"/>
+</vacations>
+
+</project>

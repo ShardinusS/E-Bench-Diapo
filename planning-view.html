@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planning E-Bench</title>
+  <style>
+    :root { --bg:#0d1220; --card:#111827; --text:#f0f4ff; --muted:#92a2be; --line:rgba(255,255,255,.08); }
+    * { box-sizing: border-box; }
+    body { margin:0; font:13px/1.3 "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { padding:10px; }
+    .head { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
+    .title { font-size:12px; color:var(--muted); }
+    .legend { display:flex; flex-wrap:wrap; gap:8px; }
+    .lg { font-size:11px; color:var(--muted); display:inline-flex; align-items:center; gap:5px; }
+    .dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
+    .grid { border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card); }
+    .r { display:grid; grid-template-columns:220px 1fr 78px; min-height:28px; align-items:center; border-bottom:1px solid var(--line); }
+    .r:last-child { border-bottom:none; }
+    .n { padding:5px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#dce7ff; }
+    .t { position:relative; height:18px; margin:0 8px; border-radius:5px; background:rgba(255,255,255,.02); }
+    .b { position:absolute; top:2px; height:14px; border-radius:4px; }
+    .d { padding:5px 8px; color:var(--muted); font-size:11px; text-align:right; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div class="title">Vue HTML du planning GanttProject (03/03/2025 -> 07/05/2025)</div>
+      <div class="legend">
+        <span class="lg"><i class="dot" style="background:#3498db"></i> Axel</span>
+        <span class="lg"><i class="dot" style="background:#2ecc71"></i> Kenzo</span>
+        <span class="lg"><i class="dot" style="background:#f1c40f"></i> Yohan</span>
+        <span class="lg"><i class="dot" style="background:#e67e22"></i> Lorenzo</span>
+        <span class="lg"><i class="dot" style="background:#e74c3c"></i> Mathéo</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="r"><div class="n">Benchmark (Axel)</div><div class="t"><div class="b" style="left:0%;width:18.46%;background:#3498db"></div></div><div class="d">12j</div></div>
+      <div class="r"><div class="n">Recherche composants (Kenzo)</div><div class="t"><div class="b" style="left:13.85%;width:20.00%;background:#2ecc71"></div></div><div class="d">13j</div></div>
+      <div class="r"><div class="n">Modélisation 3D (Yohan)</div><div class="t"><div class="b" style="left:0%;width:38.46%;background:#f1c40f"></div></div><div class="d">25j</div></div>
+      <div class="r"><div class="n">Croquis (Lorenzo)</div><div class="t"><div class="b" style="left:0%;width:23.08%;background:#e67e22"></div></div><div class="d">15j</div></div>
+      <div class="r"><div class="n">Schémas électriques (Mathéo)</div><div class="t"><div class="b" style="left:0%;width:20.00%;background:#e74c3c"></div></div><div class="d">13j</div></div>
+      <div class="r"><div class="n">Construction bois (équipe)</div><div class="t"><div class="b" style="left:46.15%;width:9.23%;background:#d68910"></div></div><div class="d">6j</div></div>
+      <div class="r"><div class="n">Intégration électronique</div><div class="t"><div class="b" style="left:90.77%;width:6.15%;background:#8e44ad"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Jalon: Prototype validé</div><div class="t"><div class="b" style="left:92.31%;width:1.2%;background:#27ae60"></div></div><div class="d">02/05</div></div>
+      <div class="r"><div class="n">Jalon: Dossier rendu</div><div class="t"><div class="b" style="left:96.92%;width:1.2%;background:#e67e22"></div></div><div class="d">05/05</div></div>
+      <div class="r"><div class="n">Jalon: Grand oral</div><div class="t"><div class="b" style="left:100%;width:1.2%;background:#e74c3c"></div></div><div class="d">07/05</div></div>
+    </div>
+  </div>
+</body>
+</html>
