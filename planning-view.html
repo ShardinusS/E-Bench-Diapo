@@ -3,105 +3,478 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Planning E-Bench</title>
+  <title>Planning E-Bench - GanttProject</title>
   <style>
-    :root { --bg:#0d1220; --card:#111827; --text:#f0f4ff; --muted:#92a2be; --line:rgba(255,255,255,.08); }
+    :root { 
+      --bg:#0d1220; 
+      --card:#111827; 
+      --text:#f0f4ff; 
+      --muted:#92a2be; 
+      --line:rgba(255,255,255,.08);
+      --header-height: 50px;
+      --row-height: 28px;
+    }
     * { box-sizing: border-box; }
-    body { margin:0; font:12px/1.3 "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { padding:8px; }
-    .head { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
-    .title { font-size:11px; color:var(--muted); }
-    .legend { display:flex; flex-wrap:wrap; gap:6px; }
-    .lg { font-size:10px; color:var(--muted); display:inline-flex; align-items:center; gap:4px; }
-    .dot { width:9px; height:9px; border-radius:2px; display:inline-block; }
-    .grid { border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card); }
-    .section { background:rgba(255,255,255,.03); font-weight:bold; padding:4px 8px; font-size:11px; border-bottom:1px solid var(--line); }
-    .r { display:grid; grid-template-columns:180px 1fr 50px; min-height:24px; align-items:center; border-bottom:1px solid var(--line); }
-    .r:last-child { border-bottom:none; }
-    .n { padding:4px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#dce7ff; font-size:11px; }
-    .t { position:relative; height:16px; margin:0 6px; border-radius:4px; background:rgba(255,255,255,.02); }
-    .b { position:absolute; top:1px; height:14px; border-radius:3px; }
-    .d { padding:4px 6px; color:var(--muted); font-size:10px; text-align:right; }
-    .milestone { background:transparent; }
-    .milestone .b { width:12px; height:12px; top:2px; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+    html, body { 
+      margin:0; 
+      height: 100%;
+      font:13px/1.3 "Segoe UI", Arial, sans-serif; 
+      background:var(--bg); 
+      color:var(--text);
+      overflow: hidden;
+    }
+    .container { 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh;
+      padding: 10px;
+    }
+    .head { 
+      display:flex; 
+      justify-content:space-between; 
+      gap:10px; 
+      align-items:center; 
+      margin-bottom:10px; 
+      flex-wrap:wrap;
+      flex-shrink: 0;
+    }
+    .title { font-size:14px; font-weight:bold; color:var(--text); }
+    .legend { display:flex; flex-wrap:wrap; gap:8px; }
+    .lg { font-size:11px; color:var(--muted); display:inline-flex; align-items:center; gap:5px; }
+    .dot { width:12px; height:12px; border-radius:3px; display:inline-block; }
+    
+    /* Scrollable Gantt Area */
+    .gantt-wrapper {
+      flex: 1;
+      overflow: auto;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--card);
+      position: relative;
+    }
+    
+    .gantt-container {
+      min-width: 100%;
+      position: relative;
+    }
+    
+    .timeline-header {
+      position: sticky;
+      top: 0;
+      display: flex;
+      background: rgba(17, 24, 39, 0.98);
+      border-bottom: 1px solid var(--line);
+      z-index: 10;
+      height: var(--header-height);
+    }
+    
+    .task-name-header {
+      min-width: 200px;
+      max-width: 200px;
+      padding: 10px;
+      font-weight: bold;
+      border-right: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      background: rgba(17, 24, 39, 0.98);
+    }
+    
+    .timeline-dates {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    
+    .date-cell {
+      min-width: 25px;
+      max-width: 25px;
+      text-align: center;
+      font-size: 9px;
+      color: var(--muted);
+      border-right: 1px solid rgba(255,255,255,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .date-cell.weekend {
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .date-cell .day-num { font-weight: bold; font-size: 10px; }
+    .date-cell .month-name { font-size: 8px; opacity: 0.7; }
+    
+    .task-row {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      height: var(--row-height);
+      min-height: var(--row-height);
+    }
+    
+    .task-row:hover {
+      background: rgba(255,255,255,0.03);
+    }
+    
+    .task-row.section-row {
+      background: rgba(255,255,255,0.06);
+      font-weight: bold;
+    }
+    
+    .task-name {
+      min-width: 200px;
+      max-width: 200px;
+      padding: 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #dce7ff;
+      font-size: 12px;
+      border-right: 1px solid var(--line);
+    }
+    
+    .task-bar-area {
+      flex: 1;
+      position: relative;
+      height: 100%;
+    }
+    
+    .task-bar {
+      position: absolute;
+      height: 18px;
+      top: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.1s, filter 0.1s;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    .task-bar:hover {
+      transform: scaleY(1.1);
+      filter: brightness(1.1);
+      z-index: 5;
+    }
+    
+    .task-bar.milestone {
+      width: 20px !important;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      background: transparent;
+    }
+    
+    .task-bar.milestone::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+    
+    .vacation-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.1) 25px,
+        rgba(231, 76, 60, 0.15) 25px,
+        rgba(231, 76, 60, 0.15) 50px
+      );
+      pointer-events: none;
+    }
+    
+    .today-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e74c3c;
+      z-index: 3;
+    }
+    
+    .tooltip {
+      position: fixed;
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11px;
+      pointer-events: none;
+      z-index: 1000;
+      max-width: 300px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
+    }
+    
+    .tooltip h4 { margin: 0 0 4px 0; font-size: 12px; color: var(--text); }
+    .tooltip p { margin: 2px 0; color: var(--muted); }
+    .tooltip .duration { color: #3498db; font-weight: bold; }
+    
+    /* Scrollbar styling */
+    .gantt-wrapper::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    .gantt-wrapper::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 5px;
+    }
+    .gantt-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+    }
+    .gantt-wrapper::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.3);
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="container">
     <div class="head">
-      <div class="title">Projet STI2D 2025 — Planning optimisé (Mars à Mai 2025)</div>
-      <div class="legend">
-        <span class="lg"><i class="dot" style="background:#3498db"></i> Axel</span>
-        <span class="lg"><i class="dot" style="background:#2ecc71"></i> Kenzo</span>
-        <span class="lg"><i class="dot" style="background:#f1c40f"></i> Yohan</span>
-        <span class="lg"><i class="dot" style="background:#e67e22"></i> Lorenzo</span>
-        <span class="lg"><i class="dot" style="background:#e74c3c"></i> Mathéo</span>
+      <div class="title">📅 Projet STI2D 2025 — Planning E-Bench (Mars à Mai 2025)</div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="gantt-wrapper" id="ganttWrapper">
+      <div class="gantt-container" id="ganttContainer">
+        <!-- Content will be generated by JavaScript -->
       </div>
     </div>
-    <div class="grid">
-      <!-- JALONS -->
-      <div class="section">📅 JALONS</div>
-      <div class="r milestone"><div class="n">🚀 Lancement</div><div class="t"><div class="b" style="left:0%;background:#2ecc71"></div></div><div class="d">03/03</div></div>
-      <div class="r milestone"><div class="n">✅ Prototype validé</div><div class="t"><div class="b" style="left:92.31%;background:#27ae60"></div></div><div class="d">02/05</div></div>
-      <div class="r milestone"><div class="n">📄 Dossier rendu</div><div class="t"><div class="b" style="left:96.92%;background:#e67e22"></div></div><div class="d">05/05</div></div>
-      <div class="r milestone"><div class="n">🎯 Grand oral</div><div class="t"><div class="b" style="left:100%;background:#e74c3c"></div></div><div class="d">07/05</div></div>
-
-      <!-- COLLECTIF -->
-      <div class="section">👥 COLLECTIF</div>
-      <div class="r"><div class="n">Brainstorming</div><div class="t"><div class="b" style="left:0%;width:3.08%;background:#95a5a6"></div></div><div class="d">2j</div></div>
-
-      <!-- AXEL -->
-      <div class="section">🔵 AXEL</div>
-      <div class="r"><div class="n">Benchmark</div><div class="t"><div class="b" style="left:0%;width:18.46%;background:#3498db"></div></div><div class="d">12j</div></div>
-      <div class="r"><div class="n">Veille techno</div><div class="t"><div class="b" style="left:24.62%;width:10.77%;background:#3498db"></div></div><div class="d">7j</div></div>
-      <div class="r"><div class="n">Calculs structure</div><div class="t"><div class="b" style="left:38.46%;width:6.15%;background:#5dade2"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Schémas électriques</div><div class="t"><div class="b" style="left:44.62%;width:3.08%;background:#5dade2"></div></div><div class="d">2j</div></div>
-      <div class="r"><div class="n">CAO</div><div class="t"><div class="b" style="left:44.62%;width:4.62%;background:#5dade2"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Design écran</div><div class="t"><div class="b" style="left:46.15%;width:4.62%;background:#85c1e9"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Programmation</div><div class="t"><div class="b" style="left:47.69%;width:3.08%;background:#9b59b6"></div></div><div class="d">2j</div></div>
-      <div class="r"><div class="n">Tests API</div><div class="t"><div class="b" style="left:81.54%;width:6.15%;background:#8e44ad"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Interface écran</div><div class="t"><div class="b" style="left:89.23%;width:3.08%;background:#8e44ad"></div></div><div class="d">2j</div></div>
-
-      <!-- KENZO -->
-      <div class="section">🟢 KENZO</div>
-      <div class="r"><div class="n">Croquis</div><div class="t"><div class="b" style="left:0%;width:10.77%;background:#2ecc71"></div></div><div class="d">7j</div></div>
-      <div class="r"><div class="n">Recherche composants</div><div class="t"><div class="b" style="left:13.85%;width:20.00%;background:#2ecc71"></div></div><div class="d">13j</div></div>
-      <div class="r"><div class="n">Tests API</div><div class="t"><div class="b" style="left:33.85%;width:7.69%;background:#16a085"></div></div><div class="d">5j</div></div>
-      <div class="r"><div class="n">Config OS</div><div class="t"><div class="b" style="left:44.62%;width:6.15%;background:#16a085"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Instagram</div><div class="t"><div class="b" style="left:46.15%;width:4.62%;background:#e74c3c"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Achat composants</div><div class="t"><div class="b" style="left:49.23%;width:1.54%;background:#f39c12"></div></div><div class="d">1j</div></div>
-      <div class="r"><div class="n">Photos/Vidéos</div><div class="t"><div class="b" style="left:87.69%;width:4.62%;background:#e74c3c"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Documentation</div><div class="t"><div class="b" style="left:92.31%;width:4.62%;background:#c0392b"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Préparation oral</div><div class="t"><div class="b" style="left:98.46%;width:1.54%;background:#c0392b"></div></div><div class="d">1j</div></div>
-
-      <!-- YOHAN -->
-      <div class="section">🟡 YOHAN</div>
-      <div class="r"><div class="n">Modélisation 3D</div><div class="t"><div class="b" style="left:0%;width:38.46%;background:#f4d03f"></div></div><div class="d">25j</div></div>
-      <div class="r"><div class="n">Construction bois</div><div class="t"><div class="b" style="left:35.38%;width:9.23%;background:#d68910"></div></div><div class="d">6j</div></div>
-      <div class="r"><div class="n">Programmation</div><div class="t"><div class="b" style="left:43.08%;width:4.62%;background:#9b59b6"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Intégration électronique</div><div class="t"><div class="b" style="left:47.69%;width:3.08%;background:#d68910"></div></div><div class="d">2j</div></div>
-      <div class="r"><div class="n">Tests unitaires</div><div class="t"><div class="b" style="left:89.23%;width:6.15%;background:#8e44ad"></div></div><div class="d">4j</div></div>
-
-      <!-- LORENZO -->
-      <div class="section">🟠 LORENZO</div>
-      <div class="r"><div class="n">Croquis</div><div class="t"><div class="b" style="left:0%;width:23.08%;background:#eb984e"></div></div><div class="d">15j</div></div>
-      <div class="r"><div class="n">Schémas électriques</div><div class="t"><div class="b" style="left:27.69%;width:10.77%;background:#eb984e"></div></div><div class="d">7j</div></div>
-      <div class="r"><div class="n">Achat composants</div><div class="t"><div class="b" style="left:44.62%;width:6.15%;background:#f39c12"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Construction bois</div><div class="t"><div class="b" style="left:49.23%;width:1.54%;background:#d35400"></div></div><div class="d">1j</div></div>
-      <div class="r"><div class="n">Installation électronique</div><div class="t"><div class="b" style="left:89.23%;width:6.15%;background:#d35400"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Normes STI2D</div><div class="t"><div class="b" style="left:21.54%;width:3.08%;background:#ca6f1e"></div></div><div class="d">2j</div></div>
-
-      <!-- MATHEO -->
-      <div class="section">🔴 MATHEO</div>
-      <div class="r"><div class="n">Schémas électriques</div><div class="t"><div class="b" style="left:0%;width:20.00%;background:#e74c3c"></div></div><div class="d">13j</div></div>
-      <div class="r"><div class="n">Calculs structure</div><div class="t"><div class="b" style="left:26.15%;width:4.62%;background:#ec7063"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">CAO</div><div class="t"><div class="b" style="left:33.85%;width:9.23%;background:#ec7063"></div></div><div class="d">6j</div></div>
-      <div class="r"><div class="n">Config système</div><div class="t"><div class="b" style="left:0%;width:7.69%;background:#af7ac5"></div></div><div class="d">5j</div></div>
-      <div class="r"><div class="n">Achat composants</div><div class="t"><div class="b" style="left:10.77%;width:7.69%;background:#f39c12"></div></div><div class="d">5j</div></div>
-      <div class="r"><div class="n">Construction bois</div><div class="t"><div class="b" style="left:46.15%;width:4.62%;background:#d35400"></div></div><div class="d">3j</div></div>
-      <div class="r"><div class="n">Intégration électrique</div><div class="t"><div class="b" style="left:89.23%;width:6.15%;background:#922b21"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Tests intégration</div><div class="t"><div class="b" style="left:92.31%;width:4.62%;background:#922b21"></div></div><div class="d">3j</div></div>
-    </div>
   </div>
+  
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    // Données du planning GanttProject
+    const planningData = {
+      project: {
+        name: "Projet STI2D 2025",
+        start: new Date("2025-03-03"),
+        end: new Date("2025-05-07")
+      },
+      vacations: [
+        { start: new Date("2025-04-11"), end: new Date("2025-04-25") }
+      ],
+      tasks: [
+        // JALONS
+        { id: "1", name: "📅 JALONS", type: "section", start: "2025-03-03", duration: 65, color: "#2c3e50" },
+        { id: "2", name: "🚀 Lancement", type: "milestone", start: "2025-03-03", duration: 0, color: "#2ecc71" },
+        { id: "3", name: "✅ Prototype validé", type: "milestone", start: "2025-05-02", duration: 0, color: "#27ae60" },
+        { id: "4", name: "📄 Dossier rendu", type: "milestone", start: "2025-05-05", duration: 0, color: "#e67e22" },
+        { id: "5", name: "🎯 Grand oral", type: "milestone", start: "2025-05-07", duration: 0, color: "#e74c3c" },
+        
+        // COLLECTIF
+        { id: "10", name: "👥 COLLECTIF", type: "section", start: "2025-03-03", duration: 2, color: "#7f8c8d" },
+        { id: "11", name: "Brainstorming", type: "task", start: "2025-03-03", duration: 2, color: "#95a5a6" },
+        
+        // AXEL
+        { id: "20", name: "🔵 AXEL", type: "section", start: "2025-03-03", duration: 60, color: "#2980b9" },
+        { id: "21", name: "Benchmark", type: "task", start: "2025-03-03", duration: 12, color: "#3498db" },
+        { id: "22", name: "Veille techno", type: "task", start: "2025-03-19", duration: 7, color: "#3498db" },
+        { id: "23", name: "Calculs structure", type: "task", start: "2025-03-28", duration: 4, color: "#5dade2" },
+        { id: "24", name: "Schémas électriques", type: "task", start: "2025-04-01", duration: 2, color: "#5dade2" },
+        { id: "25", name: "CAO", type: "task", start: "2025-04-01", duration: 3, color: "#5dade2" },
+        { id: "26", name: "Design écran", type: "task", start: "2025-04-02", duration: 3, color: "#85c1e9" },
+        { id: "27", name: "Programmation", type: "task", start: "2025-04-03", duration: 2, color: "#9b59b6" },
+        { id: "28", name: "Tests API", type: "task", start: "2025-04-29", duration: 4, color: "#8e44ad" },
+        { id: "29", name: "Interface écran", type: "task", start: "2025-05-01", duration: 2, color: "#8e44ad" },
+        
+        // KENZO
+        { id: "30", name: "🟢 KENZO", type: "section", start: "2025-03-03", duration: 65, color: "#27ae60" },
+        { id: "31", name: "Croquis", type: "task", start: "2025-03-03", duration: 7, color: "#2ecc71" },
+        { id: "32", name: "Recherche composants", type: "task", start: "2025-03-12", duration: 13, color: "#2ecc71" },
+        { id: "33", name: "Tests API", type: "task", start: "2025-03-25", duration: 5, color: "#16a085" },
+        { id: "34", name: "Config OS", type: "task", start: "2025-04-01", duration: 4, color: "#16a085" },
+        { id: "35", name: "Instagram", type: "task", start: "2025-04-02", duration: 3, color: "#e74c3c" },
+        { id: "36", name: "Achat composants", type: "task", start: "2025-04-04", duration: 1, color: "#f39c12" },
+        { id: "37", name: "Photos/Vidéos", type: "task", start: "2025-04-30", duration: 3, color: "#e74c3c" },
+        { id: "38", name: "Documentation", type: "task", start: "2025-05-02", duration: 3, color: "#c0392b" },
+        { id: "39", name: "Préparation oral", type: "task", start: "2025-05-06", duration: 1, color: "#c0392b" },
+        
+        // YOHAN
+        { id: "40", name: "🟡 YOHAN", type: "section", start: "2025-03-03", duration: 60, color: "#f1c40f" },
+        { id: "41", name: "Modélisation 3D", type: "task", start: "2025-03-03", duration: 25, color: "#f4d03f" },
+        { id: "42", name: "Construction bois", type: "task", start: "2025-03-26", duration: 6, color: "#d68910" },
+        { id: "43", name: "Programmation", type: "task", start: "2025-03-31", duration: 3, color: "#9b59b6" },
+        { id: "44", name: "Intégration électronique", type: "task", start: "2025-04-03", duration: 2, color: "#d68910" },
+        { id: "45", name: "Tests unitaires", type: "task", start: "2025-05-01", duration: 4, color: "#8e44ad" },
+        
+        // LORENZO
+        { id: "50", name: "🟠 LORENZO", type: "section", start: "2025-03-03", duration: 60, color: "#e67e22" },
+        { id: "51", name: "Croquis", type: "task", start: "2025-03-03", duration: 15, color: "#eb984e" },
+        { id: "52", name: "Schémas électriques", type: "task", start: "2025-03-21", duration: 7, color: "#eb984e" },
+        { id: "53", name: "Achat composants", type: "task", start: "2025-04-01", duration: 4, color: "#f39c12" },
+        { id: "54", name: "Construction bois", type: "task", start: "2025-04-04", duration: 1, color: "#d35400" },
+        { id: "55", name: "Installation électronique", type: "task", start: "2025-05-01", duration: 4, color: "#d35400" },
+        { id: "56", name: "Normes STI2D", type: "task", start: "2025-03-17", duration: 2, color: "#ca6f1e" },
+        
+        // MATHEO
+        { id: "60", name: "🔴 MATHEO", type: "section", start: "2025-03-03", duration: 60, color: "#c0392b" },
+        { id: "61", name: "Schémas électriques", type: "task", start: "2025-03-03", duration: 13, color: "#e74c3c" },
+        { id: "62", name: "Calculs structure", type: "task", start: "2025-03-20", duration: 3, color: "#ec7063" },
+        { id: "63", name: "CAO", type: "task", start: "2025-03-25", duration: 6, color: "#ec7063" },
+        { id: "64", name: "Config système", type: "task", start: "2025-03-03", duration: 5, color: "#af7ac5" },
+        { id: "65", name: "Achat composants", type: "task", start: "2025-03-10", duration: 5, color: "#f39c12" },
+        { id: "66", name: "Construction bois", type: "task", start: "2025-04-02", duration: 3, color: "#d35400" },
+        { id: "67", name: "Intégration électrique", type: "task", start: "2025-05-01", duration: 4, color: "#922b21" },
+        { id: "68", name: "Tests intégration", type: "task", start: "2025-05-02", duration: 3, color: "#922b21" }
+      ]
+    };
+
+    const DAY_WIDTH = 25;
+    const projectStart = planningData.project.start;
+    const projectEnd = planningData.project.end;
+    const totalDays = Math.ceil((projectEnd - projectStart) / (1000 * 60 * 60 * 24)) + 1;
+
+    function formatDate(date) {
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function getDayOffset(dateStr) {
+      const date = new Date(dateStr);
+      return Math.ceil((date - projectStart) / (1000 * 60 * 60 * 24));
+    }
+
+    function isWeekend(date) {
+      const day = date.getDay();
+      return day === 0 || day === 6;
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('ganttContainer');
+      const legend = document.getElementById('legend');
+      
+      // Render legend
+      const teamMembers = [
+        { name: "Axel", color: "#3498db" },
+        { name: "Kenzo", color: "#2ecc71" },
+        { name: "Yohan", color: "#f1c40f" },
+        { name: "Lorenzo", color: "#e67e22" },
+        { name: "Mathéo", color: "#e74c3c" }
+      ];
+      
+      legend.innerHTML = teamMembers.map(m => 
+        `<span class="lg"><i class="dot" style="background:${m.color}"></i>${m.name}</span>`
+      ).join('');
+
+      // Create timeline header
+      let headerHTML = '<div class="timeline-header"><div class="task-name-header">Tâche</div><div class="timeline-dates">';
+      
+      for (let i = 0; i < totalDays; i++) {
+        const currentDate = new Date(projectStart);
+        currentDate.setDate(currentDate.getDate() + i);
+        const isWE = isWeekend(currentDate);
+        const dayNum = currentDate.getDate();
+        const monthName = currentDate.toLocaleDateString('fr-FR', { month: 'short' });
+        
+        headerHTML += `<div class="date-cell${isWE ? ' weekend' : ''}">
+          <span class="month-name">${monthName}</span>
+          <span class="day-num">${dayNum}</span>
+        </div>`;
+      }
+      
+      headerHTML += '</div></div>';
+      container.innerHTML = headerHTML;
+
+      // Add vacation markers
+      planningData.vacations.forEach(vac => {
+        const vacStart = getDayOffset(vac.start.toISOString().split('T')[0]);
+        const vacEnd = getDayOffset(vac.end.toISOString().split('T')[0]);
+        const vacWidth = (vacEnd - vacStart + 1) * DAY_WIDTH;
+        
+        const vacMarker = document.createElement('div');
+        vacMarker.className = 'vacation-marker';
+        vacMarker.style.left = (200 + vacStart * DAY_WIDTH) + 'px';
+        vacMarker.style.width = vacWidth + 'px';
+        vacMarker.title = 'Vacances scolaires (11-25 Avril)';
+        container.appendChild(vacMarker);
+      });
+
+      // Render task rows
+      planningData.tasks.forEach(task => {
+        const row = document.createElement('div');
+        row.className = 'task-row' + (task.type === 'section' ? ' section-row' : '');
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'task-name';
+        nameDiv.textContent = task.name;
+        row.appendChild(nameDiv);
+        
+        const barArea = document.createElement('div');
+        barArea.className = 'task-bar-area';
+        
+        if (task.type !== 'section') {
+          const offset = getDayOffset(task.start);
+          const widthPx = Math.max(task.duration * DAY_WIDTH, task.type === 'milestone' ? 20 : DAY_WIDTH);
+          
+          const bar = document.createElement('div');
+          bar.className = 'task-bar' + (task.type === 'milestone' ? ' milestone' : '');
+          bar.style.left = (offset * DAY_WIDTH) + 'px';
+          bar.style.width = widthPx + 'px';
+          bar.style.background = task.color;
+          
+          if (task.type !== 'milestone' && task.duration > 2) {
+            bar.textContent = task.duration + 'j';
+          }
+          
+          // Tooltip events
+          bar.addEventListener('mouseenter', (e) => showTooltip(e, task));
+          bar.addEventListener('mousemove', (e) => moveTooltip(e));
+          bar.addEventListener('mouseleave', hideTooltip);
+          
+          barArea.appendChild(bar);
+        }
+        
+        row.appendChild(barArea);
+        container.appendChild(row);
+      });
+
+      // Add today line if within range
+      const today = new Date();
+      if (today >= projectStart && today <= projectEnd) {
+        const todayOffset = getDayOffset(today.toISOString().split('T')[0]);
+        const todayLine = document.createElement('div');
+        todayLine.className = 'today-line';
+        todayLine.style.left = (200 + todayOffset * DAY_WIDTH) + 'px';
+        todayLine.title = 'Aujourd\'hui: ' + formatDate(today);
+        container.appendChild(todayLine);
+      }
+    }
+
+    function showTooltip(e, task) {
+      const tooltip = document.getElementById('tooltip');
+      const endDate = new Date(task.start);
+      endDate.setDate(endDate.getDate() + task.duration);
+      
+      tooltip.innerHTML = `
+        <h4>${task.name}</h4>
+        <p>Début: <span class="duration">${formatDate(new Date(task.start))}</span></p>
+        <p>Fin: <span class="duration">${formatDate(endDate)}</span></p>
+        <p>Durée: <span class="duration">${task.duration} jours</span></p>
+      `;
+      tooltip.style.display = 'block';
+      moveTooltip(e);
+    }
+
+    function moveTooltip(e) {
+      const tooltip = document.getElementById('tooltip');
+      tooltip.style.left = (e.clientX + 15) + 'px';
+      tooltip.style.top = (e.clientY + 15) + 'px';
+    }
+
+    function hideTooltip() {
+      document.getElementById('tooltip').style.display = 'none';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', renderTimeline);
+  </script>
 </body>
 </html>
