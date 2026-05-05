@@ -7,26 +7,29 @@
   <style>
     :root { --bg:#0d1220; --card:#111827; --text:#f0f4ff; --muted:#92a2be; --line:rgba(255,255,255,.08); }
     * { box-sizing: border-box; }
-    body { margin:0; font:13px/1.3 "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
-    .wrap { padding:10px; }
-    .head { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
-    .title { font-size:12px; color:var(--muted); }
-    .legend { display:flex; flex-wrap:wrap; gap:8px; }
-    .lg { font-size:11px; color:var(--muted); display:inline-flex; align-items:center; gap:5px; }
-    .dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
-    .grid { border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card); }
-    .r { display:grid; grid-template-columns:220px 1fr 78px; min-height:28px; align-items:center; border-bottom:1px solid var(--line); }
+    body { margin:0; font:12px/1.3 "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { padding:8px; }
+    .head { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
+    .title { font-size:11px; color:var(--muted); }
+    .legend { display:flex; flex-wrap:wrap; gap:6px; }
+    .lg { font-size:10px; color:var(--muted); display:inline-flex; align-items:center; gap:4px; }
+    .dot { width:9px; height:9px; border-radius:2px; display:inline-block; }
+    .grid { border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card); }
+    .section { background:rgba(255,255,255,.03); font-weight:bold; padding:4px 8px; font-size:11px; border-bottom:1px solid var(--line); }
+    .r { display:grid; grid-template-columns:180px 1fr 50px; min-height:24px; align-items:center; border-bottom:1px solid var(--line); }
     .r:last-child { border-bottom:none; }
-    .n { padding:5px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#dce7ff; }
-    .t { position:relative; height:18px; margin:0 8px; border-radius:5px; background:rgba(255,255,255,.02); }
-    .b { position:absolute; top:2px; height:14px; border-radius:4px; }
-    .d { padding:5px 8px; color:var(--muted); font-size:11px; text-align:right; }
+    .n { padding:4px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#dce7ff; font-size:11px; }
+    .t { position:relative; height:16px; margin:0 6px; border-radius:4px; background:rgba(255,255,255,.02); }
+    .b { position:absolute; top:1px; height:14px; border-radius:3px; }
+    .d { padding:4px 6px; color:var(--muted); font-size:10px; text-align:right; }
+    .milestone { background:transparent; }
+    .milestone .b { width:12px; height:12px; top:2px; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="head">
-      <div class="title">Vue HTML du planning GanttProject (03/03/2025 -> 07/05/2025)</div>
+      <div class="title">Projet STI2D 2025 — Planning optimisé (Mars à Mai 2025)</div>
       <div class="legend">
         <span class="lg"><i class="dot" style="background:#3498db"></i> Axel</span>
         <span class="lg"><i class="dot" style="background:#2ecc71"></i> Kenzo</span>
@@ -36,16 +39,68 @@
       </div>
     </div>
     <div class="grid">
-      <div class="r"><div class="n">Benchmark (Axel)</div><div class="t"><div class="b" style="left:0%;width:18.46%;background:#3498db"></div></div><div class="d">12j</div></div>
-      <div class="r"><div class="n">Recherche composants (Kenzo)</div><div class="t"><div class="b" style="left:13.85%;width:20.00%;background:#2ecc71"></div></div><div class="d">13j</div></div>
-      <div class="r"><div class="n">Modélisation 3D (Yohan)</div><div class="t"><div class="b" style="left:0%;width:38.46%;background:#f1c40f"></div></div><div class="d">25j</div></div>
-      <div class="r"><div class="n">Croquis (Lorenzo)</div><div class="t"><div class="b" style="left:0%;width:23.08%;background:#e67e22"></div></div><div class="d">15j</div></div>
-      <div class="r"><div class="n">Schémas électriques (Mathéo)</div><div class="t"><div class="b" style="left:0%;width:20.00%;background:#e74c3c"></div></div><div class="d">13j</div></div>
-      <div class="r"><div class="n">Construction bois (équipe)</div><div class="t"><div class="b" style="left:46.15%;width:9.23%;background:#d68910"></div></div><div class="d">6j</div></div>
-      <div class="r"><div class="n">Intégration électronique</div><div class="t"><div class="b" style="left:90.77%;width:6.15%;background:#8e44ad"></div></div><div class="d">4j</div></div>
-      <div class="r"><div class="n">Jalon: Prototype validé</div><div class="t"><div class="b" style="left:92.31%;width:1.2%;background:#27ae60"></div></div><div class="d">02/05</div></div>
-      <div class="r"><div class="n">Jalon: Dossier rendu</div><div class="t"><div class="b" style="left:96.92%;width:1.2%;background:#e67e22"></div></div><div class="d">05/05</div></div>
-      <div class="r"><div class="n">Jalon: Grand oral</div><div class="t"><div class="b" style="left:100%;width:1.2%;background:#e74c3c"></div></div><div class="d">07/05</div></div>
+      <!-- JALONS -->
+      <div class="section">📅 JALONS</div>
+      <div class="r milestone"><div class="n">🚀 Lancement</div><div class="t"><div class="b" style="left:0%;background:#2ecc71"></div></div><div class="d">03/03</div></div>
+      <div class="r milestone"><div class="n">✅ Prototype validé</div><div class="t"><div class="b" style="left:92.31%;background:#27ae60"></div></div><div class="d">02/05</div></div>
+      <div class="r milestone"><div class="n">📄 Dossier rendu</div><div class="t"><div class="b" style="left:96.92%;background:#e67e22"></div></div><div class="d">05/05</div></div>
+      <div class="r milestone"><div class="n">🎯 Grand oral</div><div class="t"><div class="b" style="left:100%;background:#e74c3c"></div></div><div class="d">07/05</div></div>
+
+      <!-- COLLECTIF -->
+      <div class="section">👥 COLLECTIF</div>
+      <div class="r"><div class="n">Brainstorming</div><div class="t"><div class="b" style="left:0%;width:3.08%;background:#95a5a6"></div></div><div class="d">2j</div></div>
+
+      <!-- AXEL -->
+      <div class="section">🔵 AXEL</div>
+      <div class="r"><div class="n">Benchmark</div><div class="t"><div class="b" style="left:0%;width:18.46%;background:#3498db"></div></div><div class="d">12j</div></div>
+      <div class="r"><div class="n">Veille techno</div><div class="t"><div class="b" style="left:24.62%;width:10.77%;background:#3498db"></div></div><div class="d">7j</div></div>
+      <div class="r"><div class="n">Calculs structure</div><div class="t"><div class="b" style="left:38.46%;width:6.15%;background:#5dade2"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Schémas électriques</div><div class="t"><div class="b" style="left:44.62%;width:3.08%;background:#5dade2"></div></div><div class="d">2j</div></div>
+      <div class="r"><div class="n">CAO</div><div class="t"><div class="b" style="left:44.62%;width:4.62%;background:#5dade2"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Design écran</div><div class="t"><div class="b" style="left:46.15%;width:4.62%;background:#85c1e9"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Programmation</div><div class="t"><div class="b" style="left:47.69%;width:3.08%;background:#9b59b6"></div></div><div class="d">2j</div></div>
+      <div class="r"><div class="n">Tests API</div><div class="t"><div class="b" style="left:81.54%;width:6.15%;background:#8e44ad"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Interface écran</div><div class="t"><div class="b" style="left:89.23%;width:3.08%;background:#8e44ad"></div></div><div class="d">2j</div></div>
+
+      <!-- KENZO -->
+      <div class="section">🟢 KENZO</div>
+      <div class="r"><div class="n">Croquis</div><div class="t"><div class="b" style="left:0%;width:10.77%;background:#2ecc71"></div></div><div class="d">7j</div></div>
+      <div class="r"><div class="n">Recherche composants</div><div class="t"><div class="b" style="left:13.85%;width:20.00%;background:#2ecc71"></div></div><div class="d">13j</div></div>
+      <div class="r"><div class="n">Tests API</div><div class="t"><div class="b" style="left:33.85%;width:7.69%;background:#16a085"></div></div><div class="d">5j</div></div>
+      <div class="r"><div class="n">Config OS</div><div class="t"><div class="b" style="left:44.62%;width:6.15%;background:#16a085"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Instagram</div><div class="t"><div class="b" style="left:46.15%;width:4.62%;background:#e74c3c"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Achat composants</div><div class="t"><div class="b" style="left:49.23%;width:1.54%;background:#f39c12"></div></div><div class="d">1j</div></div>
+      <div class="r"><div class="n">Photos/Vidéos</div><div class="t"><div class="b" style="left:87.69%;width:4.62%;background:#e74c3c"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Documentation</div><div class="t"><div class="b" style="left:92.31%;width:4.62%;background:#c0392b"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Préparation oral</div><div class="t"><div class="b" style="left:98.46%;width:1.54%;background:#c0392b"></div></div><div class="d">1j</div></div>
+
+      <!-- YOHAN -->
+      <div class="section">🟡 YOHAN</div>
+      <div class="r"><div class="n">Modélisation 3D</div><div class="t"><div class="b" style="left:0%;width:38.46%;background:#f4d03f"></div></div><div class="d">25j</div></div>
+      <div class="r"><div class="n">Construction bois</div><div class="t"><div class="b" style="left:35.38%;width:9.23%;background:#d68910"></div></div><div class="d">6j</div></div>
+      <div class="r"><div class="n">Programmation</div><div class="t"><div class="b" style="left:43.08%;width:4.62%;background:#9b59b6"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Intégration électronique</div><div class="t"><div class="b" style="left:47.69%;width:3.08%;background:#d68910"></div></div><div class="d">2j</div></div>
+      <div class="r"><div class="n">Tests unitaires</div><div class="t"><div class="b" style="left:89.23%;width:6.15%;background:#8e44ad"></div></div><div class="d">4j</div></div>
+
+      <!-- LORENZO -->
+      <div class="section">🟠 LORENZO</div>
+      <div class="r"><div class="n">Croquis</div><div class="t"><div class="b" style="left:0%;width:23.08%;background:#eb984e"></div></div><div class="d">15j</div></div>
+      <div class="r"><div class="n">Schémas électriques</div><div class="t"><div class="b" style="left:27.69%;width:10.77%;background:#eb984e"></div></div><div class="d">7j</div></div>
+      <div class="r"><div class="n">Achat composants</div><div class="t"><div class="b" style="left:44.62%;width:6.15%;background:#f39c12"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Construction bois</div><div class="t"><div class="b" style="left:49.23%;width:1.54%;background:#d35400"></div></div><div class="d">1j</div></div>
+      <div class="r"><div class="n">Installation électronique</div><div class="t"><div class="b" style="left:89.23%;width:6.15%;background:#d35400"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Normes STI2D</div><div class="t"><div class="b" style="left:21.54%;width:3.08%;background:#ca6f1e"></div></div><div class="d">2j</div></div>
+
+      <!-- MATHEO -->
+      <div class="section">🔴 MATHEO</div>
+      <div class="r"><div class="n">Schémas électriques</div><div class="t"><div class="b" style="left:0%;width:20.00%;background:#e74c3c"></div></div><div class="d">13j</div></div>
+      <div class="r"><div class="n">Calculs structure</div><div class="t"><div class="b" style="left:26.15%;width:4.62%;background:#ec7063"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">CAO</div><div class="t"><div class="b" style="left:33.85%;width:9.23%;background:#ec7063"></div></div><div class="d">6j</div></div>
+      <div class="r"><div class="n">Config système</div><div class="t"><div class="b" style="left:0%;width:7.69%;background:#af7ac5"></div></div><div class="d">5j</div></div>
+      <div class="r"><div class="n">Achat composants</div><div class="t"><div class="b" style="left:10.77%;width:7.69%;background:#f39c12"></div></div><div class="d">5j</div></div>
+      <div class="r"><div class="n">Construction bois</div><div class="t"><div class="b" style="left:46.15%;width:4.62%;background:#d35400"></div></div><div class="d">3j</div></div>
+      <div class="r"><div class="n">Intégration électrique</div><div class="t"><div class="b" style="left:89.23%;width:6.15%;background:#922b21"></div></div><div class="d">4j</div></div>
+      <div class="r"><div class="n">Tests intégration</div><div class="t"><div class="b" style="left:92.31%;width:4.62%;background:#922b21"></div></div><div class="d">3j</div></div>
     </div>
   </div>
 </body>
