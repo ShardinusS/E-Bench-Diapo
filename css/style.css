@@ -106,7 +106,8 @@ body::before {
 
 #budget-actions,
 #budget-actions a,
-#budget-actions button {
+#budget-actions button,
+#budget-actions label {
   pointer-events: auto;
 }
 .slide.exit-left {
@@ -135,7 +136,17 @@ body::before {
 .slide.active iframe,
 .slide.active a,
 .slide.active button,
-.slide.active .card {
+.slide.active .card,
+.slide.active canvas,
+.slide.active input,
+.slide.active select,
+.slide.active textarea {
+  pointer-events: auto !important;
+}
+
+/* Ensure canvas containers allow interaction */
+#canvas-container-3d,
+#bench-3d-wrap {
   pointer-events: auto !important;
 }
 
@@ -529,6 +540,7 @@ body::before {
 .three-wrap {
   width: 340px; height: 280px; border-radius: 16px; overflow: hidden;
   border: 1px solid var(--border); background: var(--bg-card);
+  pointer-events: auto !important;
 }
 
 /* ── REALISATION PHOTOS ── */
