@@ -131,6 +131,14 @@ body::before {
   pointer-events: none;
 }
 
+/* Allow interaction with iframes and links inside slides */
+.slide.active iframe,
+.slide.active a,
+.slide.active button,
+.slide.active .card {
+  pointer-events: auto !important;
+}
+
 .nav-btn {
   background: var(--bg-card);
   border: 1px solid var(--border);
